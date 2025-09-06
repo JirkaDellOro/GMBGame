@@ -1,6 +1,6 @@
 var Arkanoid;
 (function (Arkanoid) {
-    let f = ;
+    var ƒ = FudgeCore;
     let timePreviousFrame = 0;
     let game;
     const balls = [];
@@ -12,6 +12,9 @@ var Arkanoid;
     window.addEventListener("mousemove", hndMouse);
     async function hndLoad() {
         game = document.querySelector("game");
+        let touch = new ƒ.TouchEventDispatcher(game);
+        touch.activate(true);
+        game.addEventListener(ƒ.EVENT_TOUCH.MOVE, () => console.log("MOVE"));
         for (let i = 0; i < nBalls; i++) {
             const ball = createBall();
             game.appendChild(ball.element);

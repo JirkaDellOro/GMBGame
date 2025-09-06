@@ -1,5 +1,5 @@
 namespace Arkanoid {
-  let f = import FudgeCore;
+  import ƒ = FudgeCore;
 
   type Vector = { x: number; y: number; };
   type Ball = { element: HTMLSpanElement, position: Vector, velocity: Vector };
@@ -20,6 +20,9 @@ namespace Arkanoid {
 
   async function hndLoad(): Promise<void> {
     game = document.querySelector("game");
+    let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game);
+    touch.activate(true);
+    game.addEventListener(ƒ.EVENT_TOUCH.MOVE, ()=>console.log("MOVE"));
 
     for (let i: number = 0; i < nBalls; i++) {
       const ball: Ball = createBall();
