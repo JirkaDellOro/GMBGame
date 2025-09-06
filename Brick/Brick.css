@@ -1,0 +1,41 @@
+html, body {
+  height: 100vh;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  background-color: black;
+  display: grid;
+  grid-template-rows: 10% auto 10%;
+}
+
+header, footer {
+  background-color: brown;
+}
+
+span {
+  background-color: white;
+  display: inline-block;
+  position: fixed;
+  width: 1px;
+  height: 1px;
+}
+
+.ball {
+  border-radius: 50%;
+  transform: matrix(20, 0, 0, 20, 0, 0);
+}
+
+.paddle {
+  background-color: red;
+  transform: matrix(20, 0, 0, 20, 0, 0);
+}
+
+.block {
+  background-color: white;
+  transform: matrix(20, 0, 0, 20, 0, 0);
+}
+
+.block[type="2"] {
+  background-color: lightblue;
+  transform: matrix(20, 0, 0, 20, 0, 0);
+}
