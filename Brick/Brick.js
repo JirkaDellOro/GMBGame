@@ -1,3 +1,4 @@
+///<reference path="../Common/FUDGE/FudgeCore.d.ts"/>
 var Arkanoid;
 (function (Arkanoid) {
     var ƒ = FudgeCore;
@@ -20,7 +21,7 @@ var Arkanoid;
             game.appendChild(ball.element);
             balls.push(ball);
         }
-        blocks = await loadLevel("Level.json");
+        blocks = await loadLevel("Brick/Level.json");
         for (const block of blocks)
             game.appendChild(block.element);
         paddle = createBlock({ x: game.clientWidth / 2, y: game.clientHeight - 20 }, 100);

@@ -1,3 +1,4 @@
+///<reference path="../Common/FUDGE/FudgeCore.d.ts"/>
 namespace Arkanoid {
   import ƒ = FudgeCore;
 
@@ -19,10 +20,10 @@ namespace Arkanoid {
   window.addEventListener("mousemove", hndMouse);
 
   async function hndLoad(): Promise<void> {
-    game = document.querySelector("game");
+    game = document.querySelector("game")!;
     let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game);
     touch.activate(true);
-    game.addEventListener(ƒ.EVENT_TOUCH.MOVE, ()=>console.log("MOVE"));
+    game.addEventListener(ƒ.EVENT_TOUCH.MOVE, () => console.log("MOVE"));
 
     for (let i: number = 0; i < nBalls; i++) {
       const ball: Ball = createBall();
@@ -30,7 +31,7 @@ namespace Arkanoid {
       balls.push(ball);
     }
 
-    blocks = await loadLevel("Level.json");
+    blocks = await loadLevel("Brick/Level.json");
     for (const block of blocks)
       game.appendChild(block.element);
 
@@ -80,11 +81,11 @@ namespace Arkanoid {
         position.x = ball.position.x;
       }
 
-      const hit: Hit = checkCollisions(ball, position);
+      const hit: Hit | null = checkCollisions(ball, position);
 
       if (hit) {
         if (hit.block != paddle) {
-          const type: string = hit.block.element.getAttribute("type");
+          const type: string = hit.block.element.getAttribute("type")!;
           if (Number(type) > 1)
             hit.block.element.setAttribute("type", "" + (Number(type) - 1));
           else
@@ -102,7 +103,7 @@ namespace Arkanoid {
     }
   }
 
-  function checkCollisions(_ball: Ball, _position: Vector): Hit {
+  function checkCollisions(_ball: Ball, _position: Vector): Hit | null {
     for (let iBlock: number = 0; iBlock < blocks.length; iBlock++) {
       const block: Block = blocks[iBlock];
       const left: boolean = _position.x + radius < block.position.x - block.scale.x / 2;
@@ -161,7 +162,7 @@ namespace Arkanoid {
 
   function remove(_collection: Block[] | Ball[], _index: number): void {
     const element: HTMLElement = _collection[_index].element;
-    element.parentElement.removeChild(element);
+    element.parentElement!.removeChild(element);
     _collection.splice(_index, 1);
   }
 
