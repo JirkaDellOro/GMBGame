@@ -17,10 +17,10 @@ namespace Arkanoid {
   const radius: number = 10;
 
   window.addEventListener("load", hndLoad);
-  window.addEventListener("mousemove", hndMouse);
+  document.addEventListener("mousemove", hndMouse);
 
   async function hndLoad(): Promise<void> {
-    game = document.querySelector("game")!;
+    game = document.querySelector("body")!;
     let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game);
     touch.activate(true);
     game.addEventListener(ƒ.EVENT_TOUCH.MOVE, () => console.log("MOVE"));
@@ -31,7 +31,7 @@ namespace Arkanoid {
       balls.push(ball);
     }
 
-    blocks = await loadLevel("Brick/Level.json");
+    blocks = await loadLevel("./Level.json");
     for (const block of blocks)
       game.appendChild(block.element);
 

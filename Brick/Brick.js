@@ -10,9 +10,9 @@ var Arkanoid;
     const nBalls = 1;
     const radius = 10;
     window.addEventListener("load", hndLoad);
-    window.addEventListener("mousemove", hndMouse);
+    document.addEventListener("mousemove", hndMouse);
     async function hndLoad() {
-        game = document.querySelector("game");
+        game = document.querySelector("body");
         let touch = new ƒ.TouchEventDispatcher(game);
         touch.activate(true);
         game.addEventListener(ƒ.EVENT_TOUCH.MOVE, () => console.log("MOVE"));
@@ -21,7 +21,7 @@ var Arkanoid;
             game.appendChild(ball.element);
             balls.push(ball);
         }
-        blocks = await loadLevel("Brick/Level.json");
+        blocks = await loadLevel("./Level.json");
         for (const block of blocks)
             game.appendChild(block.element);
         paddle = createBlock({ x: game.clientWidth / 2, y: game.clientHeight - 20 }, 100);

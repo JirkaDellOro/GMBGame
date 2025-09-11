@@ -1,15 +1,15 @@
-html, body {
-  height: 100vh;
+html,
+body {
+  height: 100%;
   margin: 0px;
   padding: 0px;
   overflow: hidden;
   background-color: black;
-  display: grid;
-  grid-template-rows: 10% auto 10%;
 }
 
-header, footer {
-  background-color: brown;
+body {
+  aspect-ratio: 1/2;
+  background-color: darkblue;
 }
 
 span {
