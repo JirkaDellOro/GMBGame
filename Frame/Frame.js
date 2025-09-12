@@ -17,8 +17,12 @@ var Frame;
         setupHeader(stage.docents);
     }
     function setupHeader(docents) {
-        let header = document.querySelector("div#header");
-        // header.innerHTML = "";
+        let span = document.querySelector("span#docents");
+        span.innerHTML = "";
+        for (let docent of docents) {
+            let folder = "Dummy"; // docent;
+            span.innerHTML += `<img src="Common/Header/Portraits/${folder}/Neutral.png">`;
+        }
     }
 })(Frame || (Frame = {}));
 //# sourceMappingURL=Frame.js.map

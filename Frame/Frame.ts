@@ -24,8 +24,12 @@ namespace Frame {
   }
  
   function setupHeader(docents: string[]) {
-    let header = document.querySelector("div#header");
-    // header.innerHTML = "";
+    let span: HTMLSpanElement = document.querySelector("span#docents")!;
+    span.innerHTML = "";
+    for (let docent of docents) {
+      let folder: string = "Dummy"; // docent;
+      span.innerHTML += `<img src="Common/Header/Portraits/${folder}/Neutral.png">`;
+    }
   }
 }
 

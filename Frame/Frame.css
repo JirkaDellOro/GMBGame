@@ -17,9 +17,10 @@ div {
 }
 
 div#header {
+  height: 10vh;
   display: grid;
   grid-template-columns: auto auto auto;
-  grid-auto-flow: dense;
+  overflow: hidden;
 }
 
 span {
@@ -27,6 +28,7 @@ span {
 }
 
 img {
-  height: 90%;
-  padding-top: 2%;
+  height: 10px;
+  /* padding-top: 2%; */
+  /* aspect-ratio: 1/1; */
 }
