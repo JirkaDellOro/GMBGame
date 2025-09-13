@@ -1,4 +1,3 @@
-///<reference path="../Common/FUDGE/FudgeCore.d.ts"/>
 var Arkanoid;
 (function (Arkanoid) {
     var ƒ = FudgeCore;
@@ -61,7 +60,8 @@ var Arkanoid;
             const hit = checkCollisions(ball, position);
             if (hit) {
                 if (hit.block != paddle) {
-                    parent.postMessage("test");
+                    let message = { type: Common.MESSAGE.HIT, docent: 0 };
+                    parent.postMessage(message);
                     const type = hit.block.element.getAttribute("type");
                     if (Number(type) > 1)
                         hit.block.element.setAttribute("type", "" + (Number(type) - 1));

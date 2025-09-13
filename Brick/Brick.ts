@@ -1,4 +1,3 @@
-///<reference path="../Common/FUDGE/FudgeCore.d.ts"/>
 namespace Arkanoid {
   import ƒ = FudgeCore;
 
@@ -85,7 +84,8 @@ namespace Arkanoid {
 
       if (hit) {
         if (hit.block != paddle) {
-          parent.postMessage("test");
+          let message: Common.Message = {type: Common.MESSAGE.HIT, docent: 0};
+          parent.postMessage(message);
           const type: string = hit.block.element.getAttribute("type")!;
           if (Number(type) > 1)
             hit.block.element.setAttribute("type", "" + (Number(type) - 1));

@@ -1,7 +1,7 @@
 var Frame;
 (function (Frame) {
     window.addEventListener("load", start);
-    window.addEventListener("message", (_event) => console.log(_event));
+    window.addEventListener("message", (_event) => affectDocent(_event.data));
     let game;
     const data = [
         [
@@ -22,8 +22,13 @@ var Frame;
         span.innerHTML = "";
         for (let docent of docents) {
             let folder = "Dummy"; // docent;  // change this to docent when the images are available
-            span.innerHTML += `<img src="Common/Header/Portraits/${folder}/Neutral.png">`;
+            span.innerHTML += `<img src="${Common.pathToPortraits}${folder}/Neutral.png" id="${docent}">`;
         }
+    }
+    function affectDocent(_effect) {
+        const span = document.querySelector("span#docents");
+        const img = span.children[0];
+        img.src = `${Common.pathToPortraits}${img.id}/Attack.png`;
     }
 })(Frame || (Frame = {}));
 //# sourceMappingURL=Frame.js.map
