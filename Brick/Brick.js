@@ -61,6 +61,7 @@ var Arkanoid;
             const hit = checkCollisions(ball, position);
             if (hit) {
                 if (hit.block != paddle) {
+                    parent.postMessage("test");
                     const type = hit.block.element.getAttribute("type");
                     if (Number(type) > 1)
                         hit.block.element.setAttribute("type", "" + (Number(type) - 1));

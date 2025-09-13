@@ -1,6 +1,7 @@
 var Frame;
 (function (Frame) {
     window.addEventListener("load", start);
+    window.addEventListener("message", (_event) => console.log(_event));
     let game;
     const data = [
         [
@@ -12,7 +13,7 @@ var Frame;
         console.log("Start Frame");
         let stage = data[0][0];
         game = document.querySelector("iframe");
-        // game.src = 
+        game.src = stage.game;
         console.log(game, stage.game);
         setupHeader(stage.docents);
     }
@@ -20,7 +21,7 @@ var Frame;
         let span = document.querySelector("span#docents");
         span.innerHTML = "";
         for (let docent of docents) {
-            let folder = "Dummy"; // docent;
+            let folder = "Dummy"; // docent;  // change this to docent when the images are available
             span.innerHTML += `<img src="Common/Header/Portraits/${folder}/Neutral.png">`;
         }
     }
