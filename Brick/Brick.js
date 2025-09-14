@@ -60,7 +60,7 @@ var Arkanoid;
             const hit = checkCollisions(ball, position);
             if (hit) {
                 if (hit.block != paddle) {
-                    let message = { type: Common.MESSAGE.HIT, docent: 0 };
+                    let message = { type: Common.MESSAGE.HIT, docent: 1 };
                     parent.postMessage(message);
                     const type = hit.block.element.getAttribute("type");
                     if (Number(type) > 1)
