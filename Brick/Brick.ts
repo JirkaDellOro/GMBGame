@@ -19,7 +19,7 @@ namespace Arkanoid {
   document.addEventListener("mousemove", hndMouse);
 
   async function hndLoad(): Promise<void> {
-    game = document.querySelector("body")!;
+    game = document.querySelector("body div")!;
     let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game);
     touch.activate(true);
     game.addEventListener(ƒ.EVENT_TOUCH.MOVE, () => console.log("MOVE"));

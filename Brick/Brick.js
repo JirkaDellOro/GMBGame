@@ -11,7 +11,7 @@ var Arkanoid;
     window.addEventListener("load", hndLoad);
     document.addEventListener("mousemove", hndMouse);
     async function hndLoad() {
-        game = document.querySelector("body");
+        game = document.querySelector("body div");
         let touch = new ƒ.TouchEventDispatcher(game);
         touch.activate(true);
         game.addEventListener(ƒ.EVENT_TOUCH.MOVE, () => console.log("MOVE"));
