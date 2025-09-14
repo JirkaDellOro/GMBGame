@@ -23,7 +23,7 @@ namespace Arkanoid {
     let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game);
     touch.activate(true);
     game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
-    // game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
+    game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
 
     for (let i: number = 0; i < nBalls; i++) {
       const ball: Ball = createBall();
