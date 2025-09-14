@@ -22,7 +22,8 @@ namespace Arkanoid {
     game = document.querySelector("body div")!;
     let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game);
     touch.activate(true);
-    game.addEventListener(ƒ.EVENT_TOUCH.MOVE, () => console.log("MOVE"));
+    game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
+    // game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
 
     for (let i: number = 0; i < nBalls; i++) {
       const ball: Ball = createBall();
@@ -38,8 +39,6 @@ namespace Arkanoid {
     game.appendChild(paddle.element);
     paddle.element.className = "paddle";
     blocks.unshift(paddle);
-
-
 
     update(0);
   }
@@ -62,6 +61,12 @@ namespace Arkanoid {
   function hndMouse(_event: MouseEvent): void {
     paddle.position.x = _event.clientX;
     // paddle.position.y = _event.clientY;
+    paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale)
+  }
+  
+  function hndTouch(_event: CustomEvent): void {
+    let detail: ƒ.EventTouchDetail = _event.detail;
+    paddle.position.x = detail.position.x;
     paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale)
   }
 

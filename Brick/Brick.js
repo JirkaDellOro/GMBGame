@@ -14,7 +14,8 @@ var Arkanoid;
         game = document.querySelector("body div");
         let touch = new ƒ.TouchEventDispatcher(game);
         touch.activate(true);
-        game.addEventListener(ƒ.EVENT_TOUCH.MOVE, () => console.log("MOVE"));
+        game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
+        // game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
         for (let i = 0; i < nBalls; i++) {
             const ball = createBall();
             game.appendChild(ball.element);
@@ -42,6 +43,11 @@ var Arkanoid;
     function hndMouse(_event) {
         paddle.position.x = _event.clientX;
         // paddle.position.y = _event.clientY;
+        paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale);
+    }
+    function hndTouch(_event) {
+        let detail = _event.detail;
+        paddle.position.x = detail.position.x;
         paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale);
     }
     function move(_timeDelta) {
