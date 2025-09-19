@@ -9,7 +9,7 @@ namespace Arkanoid {
   type Paddle = Block;
   type Hit = { block: Block, position: Vector };
 
-  let timePreviousFrame: number = 0;
+  let timePreviousFrame: number;
 
   let game: HTMLElement;
   const balls: Ball[] = [];
@@ -45,20 +45,21 @@ namespace Arkanoid {
     paddle.element.className = "paddle";
     blocks.unshift(paddle);
 
-    distractor = createBonus();
+    distractor = createDistractor();
     game.appendChild(distractor.element);
 
-    update(0);
+    timePreviousFrame = performance.now();
+    update(timePreviousFrame);
   }
 
   function update(_time: number): void {
     let timeDelta: number = _time - timePreviousFrame;
+    timePreviousFrame = _time;
     timeDelta /= 1000;
 
     processInput();
     move(timeDelta);
 
-    timePreviousFrame = _time;
     requestAnimationFrame(update);
   }
 
@@ -100,8 +101,7 @@ namespace Arkanoid {
 
       distractor.position.x += distractor.velocity.x * _timeDelta;
       distractor.position.y += distractor.velocity.y * _timeDelta;
-      distractor.element.style.transform = createMatrix(distractor.position, 0, { x: radius * 2, y: radius * 2 })
-      console.log(distractor.position);
+      distractor.element.style.transform = createMatrix(distractor.position, 0, { x: radius * 3, y: radius * 2 })
       if (checkCollision(paddle, distractor.position)) {
         console.log("Distractor!");
         distractor.element.parentElement!.removeChild(distractor.element);
@@ -182,14 +182,14 @@ namespace Arkanoid {
     ball.element.className = "ball";
     return ball;
   }
-  function createBonus(): Ball {
-    const bonus: Ball = {
+  function createDistractor(): Ball {
+    const distractor: Ball = {
       element: document.createElement("span"),
       position: { x: game.clientWidth / 2, y: 10, },
       velocity: { x: 0, y: 100 }
     }
-    bonus.element.className = "ball";
-    return bonus;
+    distractor.element.className = "distractor";
+    return distractor;
   }
 
   function createBlock(_position: Vector, _width: number): Block {

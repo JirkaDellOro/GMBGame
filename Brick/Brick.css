@@ -26,6 +26,11 @@ span {
   transform: matrix(20, 0, 0, 20, 0, 0);
 }
 
+.distractor {
+  border-radius: 20%;
+  transform: matrix(30, 0, 0, 20, 0, 0);
+}
+
 .paddle {
   background-color: red;
   transform: matrix(20, 0, 0, 20, 0, 0);
