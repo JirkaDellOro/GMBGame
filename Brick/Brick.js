@@ -6,6 +6,7 @@ var Arkanoid;
     const balls = [];
     let blocks;
     let paddle;
+    let distractor;
     const nBalls = 1;
     const radius = 10;
     window.addEventListener("load", hndLoad);
@@ -28,6 +29,8 @@ var Arkanoid;
         game.appendChild(paddle.element);
         paddle.element.className = "paddle";
         blocks.unshift(paddle);
+        distractor = createBonus();
+        game.appendChild(distractor.element);
         update(0);
     }
     function update(_time) {
@@ -52,60 +55,78 @@ var Arkanoid;
     }
     function move(_timeDelta) {
         for (const ball of balls) {
-            const position = {
+            let positionNew = {
                 x: ball.position.x + ball.velocity.x * _timeDelta, y: ball.position.y + ball.velocity.y * _timeDelta
             };
-            if (position.y > game.clientHeight - radius || position.y < radius) {
+            if (positionNew.y > game.clientHeight - radius || positionNew.y < radius) {
                 ball.velocity.y *= -1;
-                position.y = ball.position.y;
+                positionNew.y = ball.position.y;
             }
-            if (position.x > game.clientWidth - radius || position.x < radius) {
+            if (positionNew.x > game.clientWidth - radius || positionNew.x < radius) {
                 ball.velocity.x *= -1;
-                position.x = ball.position.x;
+                positionNew.x = ball.position.x;
             }
-            const hit = checkCollisions(ball, position);
-            if (hit) {
-                if (hit.block != paddle) {
-                    let message = { type: Common.MESSAGE.HIT, docent: 1 };
-                    parent.postMessage(message);
-                    const type = hit.block.element.getAttribute("type");
-                    if (Number(type) > 1)
-                        hit.block.element.setAttribute("type", "" + (Number(type) - 1));
-                    else
-                        remove(blocks, blocks.indexOf(hit.block));
-                }
-                else {
-                    const deflect = 2 * hit.position.x / paddle.scale.x;
-                    if (ball.velocity.y < 0)
-                        ball.velocity.x = 200 * deflect;
-                }
+            processBallCollisions(ball, positionNew);
+            if (!distractor)
+                return;
+            distractor.position.x += distractor.velocity.x * _timeDelta;
+            distractor.position.y += distractor.velocity.y * _timeDelta;
+            distractor.element.style.transform = createMatrix(distractor.position, 0, { x: radius * 2, y: radius * 2 });
+            console.log(distractor.position);
+            if (checkCollision(paddle, distractor.position)) {
+                console.log("Distractor!");
+                distractor.element.parentElement.removeChild(distractor.element);
+                distractor = null;
             }
-            ball.position = position;
-            ball.element.style.transform = createMatrix(position, 0, { x: radius * 2, y: radius * 2 });
         }
+    }
+    function processBallCollisions(_ball, _positionCheck) {
+        const hit = checkCollisions(_ball, _positionCheck);
+        if (hit) {
+            if (hit.block != paddle) {
+                let message = { type: Common.MESSAGE.HIT, docent: 1 };
+                parent.postMessage(message);
+                const type = hit.block.element.getAttribute("type");
+                if (Number(type) > 1)
+                    hit.block.element.setAttribute("type", "" + (Number(type) - 1));
+                else
+                    remove(blocks, blocks.indexOf(hit.block));
+            }
+            else {
+                const deflect = 2 * hit.position.x / paddle.scale.x;
+                if (_ball.velocity.y < 0)
+                    _ball.velocity.x = 200 * deflect;
+            }
+        }
+        _ball.position = _positionCheck;
+        _ball.element.style.transform = createMatrix(_positionCheck, 0, { x: radius * 2, y: radius * 2 });
     }
     function checkCollisions(_ball, _position) {
         for (let iBlock = 0; iBlock < blocks.length; iBlock++) {
             const block = blocks[iBlock];
-            const left = _position.x + radius < block.position.x - block.scale.x / 2;
-            const right = _position.x - radius > block.position.x + block.scale.x / 2;
-            const top = _position.y + radius < block.position.y - block.scale.y / 2;
-            const bottom = _position.y - radius > block.position.y + block.scale.y / 2;
-            if (left || right || top || bottom)
-                continue;
-            else {
-                // console.log("Collision:", _position.x, _position.y);
+            if (checkCollision(block, _position)) {
                 const hit = {
                     block: block, position: { x: _position.x - block.position.x, y: _position.y - block.position.y }
                 };
-                if (hit.position.y < -block.scale.y / 2 || hit.position.y > block.scale.y / 2)
-                    _ball.velocity.y *= Math.sign(_ball.velocity.y) * Math.sign(hit.position.y);
-                if (hit.position.x < -block.scale.x / 2 || hit.position.x > block.scale.x / 2)
-                    _ball.velocity.x *= Math.sign(_ball.velocity.x) * Math.sign(hit.position.x);
+                reflectBall(_ball, hit);
                 return hit;
             }
         }
         return null;
+    }
+    function checkCollision(_block, _position) {
+        const left = _position.x + radius < _block.position.x - _block.scale.x / 2;
+        const right = _position.x - radius > _block.position.x + _block.scale.x / 2;
+        const top = _position.y + radius < _block.position.y - _block.scale.y / 2;
+        const bottom = _position.y - radius > _block.position.y + _block.scale.y / 2;
+        return !(left || right || top || bottom);
+    }
+    function reflectBall(_ball, _hit) {
+        const block = _hit.block;
+        if (_hit.position.y < -block.scale.y / 2 || _hit.position.y > block.scale.y / 2)
+            _ball.velocity.y *= Math.sign(_ball.velocity.y) * Math.sign(_hit.position.y);
+        if (_hit.position.x < -block.scale.x / 2 || _hit.position.x > block.scale.x / 2)
+            _ball.velocity.x *= Math.sign(_ball.velocity.x) * Math.sign(_hit.position.x);
     }
     function createMatrix(_translation, _rotation, _scale) {
         const sin = Math.sin(Math.PI * _rotation / 180);
@@ -121,6 +142,15 @@ var Arkanoid;
         };
         ball.element.className = "ball";
         return ball;
+    }
+    function createBonus() {
+        const bonus = {
+            element: document.createElement("span"),
+            position: { x: game.clientWidth / 2, y: 10, },
+            velocity: { x: 0, y: 100 }
+        };
+        bonus.element.className = "ball";
+        return bonus;
     }
     function createBlock(_position, _width) {
         const block = {
