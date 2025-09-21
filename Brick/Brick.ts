@@ -117,22 +117,24 @@ namespace Arkanoid {
   function processBallCollisions(_ball: Ball, _positionCheck: Vector): void {
     const hit: Hit | null = checkCollisions(_ball, _positionCheck);
 
-    if (hit) {
-      if (hit.block != paddle) {
-        let message: Common.Message = { type: Common.MESSAGE.HIT, docent: 1 };
-        parent.postMessage(message);
-        const type: string = hit.block.element.getAttribute("type")!;
-        if (Number(type) > 1)
-          hit.block.element.setAttribute("type", "" + (Number(type) - 1));
-        else
-          remove(blocks, blocks.indexOf(hit.block));
+    if (hit)
+      switch (hit.block.element.className) {
+        case "paddle":
+          const deflect: number = 2 * hit.position.x / paddle.scale.x;
+          if (_ball.velocity.y < 0)
+            _ball.velocity.x = 200 * deflect;
+          break;
+        case "heart":
+          console.log("Heart Hit!");
+          let message: Common.Message = { type: Common.MESSAGE.HIT, docent: 1 };
+          parent.postMessage(message);
+        default:
+          const type: string = hit.block.element.getAttribute("type")!;
+          if (Number(type) > 1)
+            hit.block.element.setAttribute("type", "" + (Number(type) - 1));
+          else
+            remove(blocks, blocks.indexOf(hit.block));
       }
-      else {
-        const deflect: number = 2 * hit.position.x / paddle.scale.x;
-        if (_ball.velocity.y < 0)
-          _ball.velocity.x = 200 * deflect;
-      }
-    }
 
     _ball.position = _positionCheck;
     _ball.element.style.transform = createMatrix(_positionCheck, 0, { x: radius * 2, y: radius * 2 })
@@ -224,6 +226,7 @@ namespace Arkanoid {
     const blocks: Block[] = [];
     const content: Response = await fetch(_filename);
     const json: JSON = await content.json();
+    let hearts: number = 0;
     console.log(json);
 
     for (const line in json) {
@@ -249,6 +252,10 @@ namespace Arkanoid {
           const block: Block = createBlock({ x: position.x, y: position.y }, blockSize, type);
           block.element.setAttribute("type", type);
           blocks.push(block);
+          if (type == "♥") {
+            block.element.className = "heart";
+            block.element.setAttribute("type", String(hearts++));
+          }
         }
         position.x += grid.x;
       }

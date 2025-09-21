@@ -9,16 +9,19 @@ div {
 }
 
 div#game {
-  aspect-ratio: 1/2;
+  /* aspect-ratio: 1/2; */
   background-color: darkblue;
 }
 
 span {
   background-color: white;
   display: inline-block;
-  position: fixed;
+  position: absolute;
   width: 1px;
   height: 1px;
+  font-size: 1px;
+  text-align: center;
+  vertical-align: top;
 }
 
 .ball {
@@ -40,6 +43,9 @@ span {
 .block[type="2"] {
   background-color: lightblue;
 }
-.block[type="*"] {
+.heart{
   background-color: red;
+}
+.heart::after {
+  content: "♥";
 }

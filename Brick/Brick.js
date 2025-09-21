@@ -85,22 +85,24 @@ var Arkanoid;
     }
     function processBallCollisions(_ball, _positionCheck) {
         const hit = checkCollisions(_ball, _positionCheck);
-        if (hit) {
-            if (hit.block != paddle) {
-                let message = { type: Common.MESSAGE.HIT, docent: 1 };
-                parent.postMessage(message);
-                const type = hit.block.element.getAttribute("type");
-                if (Number(type) > 1)
-                    hit.block.element.setAttribute("type", "" + (Number(type) - 1));
-                else
-                    remove(blocks, blocks.indexOf(hit.block));
+        if (hit)
+            switch (hit.block.element.className) {
+                case "paddle":
+                    const deflect = 2 * hit.position.x / paddle.scale.x;
+                    if (_ball.velocity.y < 0)
+                        _ball.velocity.x = 200 * deflect;
+                    break;
+                case "heart":
+                    console.log("Heart Hit!");
+                    let message = { type: Common.MESSAGE.HIT, docent: 1 };
+                    parent.postMessage(message);
+                default:
+                    const type = hit.block.element.getAttribute("type");
+                    if (Number(type) > 1)
+                        hit.block.element.setAttribute("type", "" + (Number(type) - 1));
+                    else
+                        remove(blocks, blocks.indexOf(hit.block));
             }
-            else {
-                const deflect = 2 * hit.position.x / paddle.scale.x;
-                if (_ball.velocity.y < 0)
-                    _ball.velocity.x = 200 * deflect;
-            }
-        }
         _ball.position = _positionCheck;
         _ball.element.style.transform = createMatrix(_positionCheck, 0, { x: radius * 2, y: radius * 2 });
     }
@@ -178,6 +180,7 @@ var Arkanoid;
         const blocks = [];
         const content = await fetch(_filename);
         const json = await content.json();
+        let hearts = 0;
         console.log(json);
         for (const line in json) {
             const upmost = 40;
@@ -198,6 +201,10 @@ var Arkanoid;
                     const block = createBlock({ x: position.x, y: position.y }, blockSize, type);
                     block.element.setAttribute("type", type);
                     blocks.push(block);
+                    if (type == "♥") {
+                        block.element.className = "heart";
+                        block.element.setAttribute("type", String(hearts++));
+                    }
                 }
                 position.x += grid.x;
             }
