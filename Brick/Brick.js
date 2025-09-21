@@ -9,14 +9,13 @@ var Arkanoid;
     let distractor;
     const nBalls = 1;
     const radius = 10;
+    const blockSize = { x: 0, y: 0 };
+    const gridSpace = { x: 5, y: 5 };
     window.addEventListener("load", hndLoad);
-    document.addEventListener("mousemove", hndMouse);
     async function hndLoad() {
-        game = document.querySelector("body div");
-        let touch = new ƒ.TouchEventDispatcher(game);
-        touch.activate(true);
-        game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
-        game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
+        game = document.querySelector("div#game");
+        blockSize.x = game.clientWidth / 8;
+        blockSize.y = blockSize.x / 2;
         for (let i = 0; i < nBalls; i++) {
             const ball = createBall();
             game.appendChild(ball.element);
@@ -25,12 +24,16 @@ var Arkanoid;
         blocks = await loadLevel("./Level.json");
         for (const block of blocks)
             game.appendChild(block.element);
-        paddle = createBlock({ x: game.clientWidth / 2, y: game.clientHeight - 20 }, 100);
+        paddle = createPaddle({ x: game.clientWidth / 2, y: game.clientHeight - 20 }, { x: blockSize.x * 2, y: blockSize.y });
         game.appendChild(paddle.element);
-        paddle.element.className = "paddle";
         blocks.unshift(paddle);
         distractor = createDistractor();
         game.appendChild(distractor.element);
+        document.addEventListener("mousemove", hndMouse);
+        let touch = new ƒ.TouchEventDispatcher(game);
+        touch.activate(true);
+        game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
+        game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
         timePreviousFrame = performance.now();
         update(timePreviousFrame);
     }
@@ -135,32 +138,36 @@ var Arkanoid;
         return "matrix(" + matrix.toString() + ")";
     }
     function createBall() {
-        const ball = {
-            element: document.createElement("span"),
-            position: { x: 20 + Math.random() * game.clientWidth - 40, y: game.clientHeight - 40, },
-            velocity: { x: 400, y: -400 }
-        };
+        const ball = createEntity({ x: 20 + Math.random() * game.clientWidth - 40, y: game.clientHeight - 40, }, "ball");
+        ball.velocity = { x: 400, y: -400 };
         ball.element.className = "ball";
         return ball;
     }
     function createDistractor() {
-        const distractor = {
-            element: document.createElement("span"),
-            position: { x: game.clientWidth / 2, y: 10, },
-            velocity: { x: 0, y: 100 }
-        };
+        const distractor = createEntity({ x: game.clientWidth / 2, y: 10, }, "distractor");
+        distractor.velocity = { x: 0, y: 100 };
         distractor.element.className = "distractor";
         return distractor;
     }
-    function createBlock(_position, _width) {
-        const block = {
-            element: document.createElement("span"),
-            position: _position,
-            scale: { x: _width, y: 20 }
-        };
-        block.element.className = "block";
+    function createPaddle(_position, _size) {
+        const paddle = createBlock(_position, _size, "paddle");
+        paddle.element.className = "paddle";
+        return paddle;
+    }
+    function createBlock(_position, _size, _type) {
+        const block = createEntity(_position, "block");
+        block.scale = { x: _size.x, y: _size.y };
         block.element.style.transform = createMatrix(block.position, 0, block.scale);
+        block.element.setAttribute("type", _type);
         return block;
+    }
+    function createEntity(_position, _type) {
+        const entity = {
+            element: document.createElement("span"),
+            position: _position
+        };
+        entity.element.className = _type;
+        return entity;
     }
     function remove(_collection, _index) {
         const element = _collection[_index].element;
@@ -174,7 +181,7 @@ var Arkanoid;
         console.log(json);
         for (const line in json) {
             const upmost = 40;
-            const grid = { x: 60, y: 30 };
+            const grid = { x: blockSize.x + gridSpace.x, y: blockSize.y + gridSpace.y };
             const descriptions = json[line];
             const types = [];
             for (const description of descriptions) {
@@ -188,7 +195,7 @@ var Arkanoid;
             };
             for (const type of types) {
                 if (type != "0") {
-                    const block = createBlock({ x: position.x, y: position.y }, 50);
+                    const block = createBlock({ x: position.x, y: position.y }, blockSize, type);
                     block.element.setAttribute("type", type);
                     blocks.push(block);
                 }
