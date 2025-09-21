@@ -5,17 +5,17 @@ namespace Arkanoid {
   type Entity = { element: HTMLSpanElement, position: Vector };
   type Ball = Entity & { velocity: Vector };
   type Block = Entity & { scale: Vector };
-  type Distractor = Ball;
+  type Distractor = Ball & { scale: Vector };
   type Paddle = Block;
-  type Hit = { block: Block, position: Vector };
+  type Hit = { entity: Block | Paddle, position: Vector, class: string };
+  type Moveable = Ball | Distractor;
 
   let timePreviousFrame: number;
 
   let game: HTMLElement;
-  const balls: Ball[] = [];
-  let blocks: Block[];
+  const moveables: Moveable[] = [];
+  let blocks: (Block | Paddle)[];
   let paddle: Paddle;
-  let distractor: Distractor;
 
   const nBalls: number = 1;
   const radius: number = 10;
@@ -31,20 +31,14 @@ namespace Arkanoid {
 
     for (let i: number = 0; i < nBalls; i++) {
       const ball: Ball = createBall();
-      game.appendChild(ball.element);
-      balls.push(ball);
+      moveables.push(ball);
     }
 
     blocks = await loadLevel("./Level.json");
-    for (const block of blocks)
-      game.appendChild(block.element);
 
     paddle = createPaddle({ x: game.clientWidth / 2, y: game.clientHeight - 20 }, { x: blockSize.x * 2, y: blockSize.y });
     game.appendChild(paddle.element);
     blocks.unshift(paddle);
-
-    distractor = createDistractor();
-    game.appendChild(distractor.element);
 
     document.addEventListener("mousemove", hndMouse);
     let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game);
@@ -73,7 +67,6 @@ namespace Arkanoid {
 
   function hndMouse(_event: MouseEvent): void {
     paddle.position.x = _event.clientX;
-    // paddle.position.y = _event.clientY;
     paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale)
   }
 
@@ -84,70 +77,71 @@ namespace Arkanoid {
   }
 
   function move(_timeDelta: number): void {
-    for (const ball of balls) {
+    for (const moveable of moveables) {
       let positionNew: Vector = {
-        x: ball.position.x + ball.velocity.x * _timeDelta, y: ball.position.y + ball.velocity.y * _timeDelta
+        x: moveable.position.x + moveable.velocity.x * _timeDelta, y: moveable.position.y + moveable.velocity.y * _timeDelta
       };
 
       if (positionNew.y > game.clientHeight - radius || positionNew.y < radius) {
-        ball.velocity.y *= -1;
-        positionNew.y = ball.position.y;
+        moveable.velocity.y *= -1;
+        positionNew.y = moveable.position.y;
       }
       if (positionNew.x > game.clientWidth - radius || positionNew.x < radius) {
-        ball.velocity.x *= -1;
-        positionNew.x = ball.position.x;
+        moveable.velocity.x *= -1;
+        positionNew.x = moveable.position.x;
       }
 
-      processBallCollisions(ball, positionNew);
-
-      if (!distractor)
-        return;
-
-      distractor.position.x += distractor.velocity.x * _timeDelta;
-      distractor.position.y += distractor.velocity.y * _timeDelta;
-      distractor.element.style.transform = createMatrix(distractor.position, 0, { x: radius * 3, y: radius * 2 })
-      if (checkCollision(paddle, distractor.position)) {
-        console.log("Distractor!");
-        distractor.element.parentElement!.removeChild(distractor.element);
-        distractor = null;
-      }
+      processCollisions(moveable, positionNew);
     }
   }
 
-  function processBallCollisions(_ball: Ball, _positionCheck: Vector): void {
-    const hit: Hit | null = checkCollisions(_ball, _positionCheck);
+  function processCollisions(_moveable: Moveable, _positionCheck: Vector): void {
+    const hit: Hit | null = checkCollisions(_moveable, _positionCheck);
+    const isDistractor: boolean = _moveable.element.className == "distractor";
 
-    if (hit)
-      switch (hit.block.element.className) {
-        case "paddle":
-          const deflect: number = 2 * hit.position.x / paddle.scale.x;
-          if (_ball.velocity.y < 0)
-            _ball.velocity.x = 200 * deflect;
-          break;
-        case "heart":
-          console.log("Heart Hit!");
-          let message: Common.Message = { type: Common.MESSAGE.HIT, docent: 1 };
-          parent.postMessage(message);
-        default:
-          const type: string = hit.block.element.getAttribute("type")!;
-          if (Number(type) > 1)
-            hit.block.element.setAttribute("type", "" + (Number(type) - 1));
-          else
-            remove(blocks, blocks.indexOf(hit.block));
+
+    if (hit) {
+      if (isDistractor) {
+        if (hit.class == "paddle")
+          console.log("Distractor hit");
       }
+      else {
+        reflectBall(_moveable, hit);
 
-    _ball.position = _positionCheck;
-    _ball.element.style.transform = createMatrix(_positionCheck, 0, { x: radius * 2, y: radius * 2 })
+        switch (hit.class) {
+          case "paddle":
+            const deflect: number = 2 * hit.position.x / paddle.scale.x;
+            if (_moveable.velocity.y < 0)
+              _moveable.velocity.x = 200 * deflect;
+            break;
+          case "heart":
+            console.log("Heart Hit!");
+            let message: Common.Message = { type: Common.MESSAGE.HIT, docent: 1 };
+            parent.postMessage(message);
+            moveables.push(createDistractor(hit.entity.position, blockSize));
+          default:
+            const type: string = hit.entity.element.getAttribute("type")!;
+            if (Number(type) > 1)
+              hit.entity.element.setAttribute("type", "" + (Number(type) - 1));
+            else
+              remove(blocks, blocks.indexOf(hit.entity));
+        }
+      }
+    }
+
+    _moveable.position = _positionCheck;
+    _moveable.element.style.transform = createMatrix(_positionCheck, 0, { x: radius * 2, y: radius * 2 })
   }
 
-  function checkCollisions(_ball: Ball, _position: Vector): Hit | null {
+  function checkCollisions(_moveable: Ball, _position: Vector): Hit | null {
     for (let iBlock: number = 0; iBlock < blocks.length; iBlock++) {
-      const block: Block = blocks[iBlock];
+      const block: Block = blocks[iBlock] as Block;
       if (checkCollision(block, _position)) {
         const hit: Hit = {
-          block: block, position: { x: _position.x - block.position.x, y: _position.y - block.position.y }
+          entity: block,
+          position: { x: _position.x - block.position.x, y: _position.y - block.position.y },
+          class: block.element.className
         };
-        reflectBall(_ball, hit);
         return hit;
       }
     }
@@ -164,7 +158,7 @@ namespace Arkanoid {
   }
 
   function reflectBall(_ball: Ball, _hit: Hit): void {
-    const block: Block = _hit.block;
+    const block: Block = _hit.entity;
     if (_hit.position.y < -block.scale.y / 2 || _hit.position.y > block.scale.y / 2)
       _ball.velocity.y *= Math.sign(_ball.velocity.y) * Math.sign(_hit.position.y);
     if (_hit.position.x < - block.scale.x / 2 || _hit.position.x > block.scale.x / 2)
@@ -182,12 +176,11 @@ namespace Arkanoid {
   function createBall(): Ball {
     const ball: Ball = <Ball>createEntity({ x: 20 + Math.random() * game.clientWidth - 40, y: game.clientHeight - 40, }, "ball");
     ball.velocity = { x: 400, y: -400 };
-    ball.element.className = "ball";
     return ball;
   }
 
-  function createDistractor(): Distractor {
-    const distractor: Distractor = <Distractor>createEntity({ x: game.clientWidth / 2, y: 10, }, "distractor");
+  function createDistractor(_position: Vector, _size: Vector): Distractor {
+    const distractor: Distractor = <Distractor>createBlock(_position, _size, "distractor");
     distractor.velocity = { x: 0, y: 100 };
     distractor.element.className = "distractor";
     return distractor;
@@ -213,10 +206,11 @@ namespace Arkanoid {
       position: _position
     }
     entity.element.className = _type;
+    game.appendChild(entity.element);
     return entity;
   }
 
-  function remove(_collection: Block[] | Ball[], _index: number): void {
+  function remove(_collection: Block[], _index: number): void {
     const element: HTMLElement = _collection[_index].element;
     element.parentElement!.removeChild(element);
     _collection.splice(_index, 1);
