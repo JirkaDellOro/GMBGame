@@ -2,7 +2,7 @@ namespace Arkanoid {
   import ƒ = FudgeCore;
 
   enum STATE {
-    START, RUN, OVER
+    START, RUN, OVER, HIT
   }
 
   type Vector = { x: number; y: number; };
@@ -36,17 +36,17 @@ namespace Arkanoid {
 
     blocks = await loadLevel("./Level.json");
 
-    paddle = createPaddle({ x: game.clientWidth / 2, y: game.clientHeight - 20 }, { x: blockSize.x * 2, y: blockSize.y });
+    paddle = createPaddle({ x: game.clientWidth / 2, y: game.clientHeight * 0.9 }, { x: blockSize.x * 2, y: blockSize.y });
     game.appendChild(paddle.element);
     blocks.unshift(paddle);
 
     document.addEventListener("mousemove", hndMouse);
     document.addEventListener("click", hndMouse);
-    let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game);
+    let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game, 100);
     touch.activate(true);
     game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
     game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
-    game.addEventListener(ƒ.EVENT_TOUCH.LONG, hndTouch);
+    // game.addEventListener(ƒ.EVENT_TOUCH.LONG, hndTouch);
 
     restart();
 
@@ -72,16 +72,13 @@ namespace Arkanoid {
   }
 
   function hndMouse(_event: MouseEvent): void {
-    paddle.position.x = _event.clientX;
-    positionPaddle();
+    positionPaddle(_event.clientX);
     if (state == STATE.START && _event.type == "click")
       startBall();
   }
 
   function hndTouch(_event: CustomEvent): void {
-    let detail: ƒ.EventTouchDetail = _event.detail;
-    paddle.position.x = detail.position.x;
-    positionPaddle();
+    positionPaddle(_event.detail.position.x);
     if (state == STATE.START && _event.type != ƒ.EVENT_TOUCH.MOVE)
       startBall();
   }
@@ -94,7 +91,10 @@ namespace Arkanoid {
     paddle.element.setAttribute("type", "");
   }
 
-  function positionPaddle(): void {
+  function positionPaddle(_x: number = paddle.position.x): void {
+    if (state == STATE.HIT)
+      return;
+    paddle.position.x = _x;
     paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale);
     if (state == STATE.START)
       ball.position = { x: paddle.position.x, y: paddle.position.y - paddle.scale.y / 2 - radius };
@@ -155,7 +155,7 @@ namespace Arkanoid {
       if (hit.class == "paddle") {
         console.log("Distractor hit");
         paddle.element.setAttribute("type", "out");
-        restart();
+        state = STATE.HIT;
       }
       return;
     }

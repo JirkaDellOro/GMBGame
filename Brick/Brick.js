@@ -6,6 +6,7 @@ var Arkanoid;
         STATE[STATE["START"] = 0] = "START";
         STATE[STATE["RUN"] = 1] = "RUN";
         STATE[STATE["OVER"] = 2] = "OVER";
+        STATE[STATE["HIT"] = 3] = "HIT";
     })(STATE || (STATE = {}));
     const moveables = [];
     const radius = 10;
@@ -27,16 +28,16 @@ var Arkanoid;
         ball = createBall(); //first in moveable array
         moveables.push(ball);
         blocks = await loadLevel("./Level.json");
-        paddle = createPaddle({ x: game.clientWidth / 2, y: game.clientHeight - 20 }, { x: blockSize.x * 2, y: blockSize.y });
+        paddle = createPaddle({ x: game.clientWidth / 2, y: game.clientHeight * 0.9 }, { x: blockSize.x * 2, y: blockSize.y });
         game.appendChild(paddle.element);
         blocks.unshift(paddle);
         document.addEventListener("mousemove", hndMouse);
         document.addEventListener("click", hndMouse);
-        let touch = new ƒ.TouchEventDispatcher(game);
+        let touch = new ƒ.TouchEventDispatcher(game, 100);
         touch.activate(true);
         game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
         game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
-        game.addEventListener(ƒ.EVENT_TOUCH.LONG, hndTouch);
+        // game.addEventListener(ƒ.EVENT_TOUCH.LONG, hndTouch);
         restart();
         ƒ.Time.game.setTimer(timeToAttack * 1000, 0, hndTimer);
         timePreviousFrame = performance.now();
@@ -55,15 +56,12 @@ var Arkanoid;
         requestAnimationFrame(update);
     }
     function hndMouse(_event) {
-        paddle.position.x = _event.clientX;
-        positionPaddle();
+        positionPaddle(_event.clientX);
         if (state == STATE.START && _event.type == "click")
             startBall();
     }
     function hndTouch(_event) {
-        let detail = _event.detail;
-        paddle.position.x = detail.position.x;
-        positionPaddle();
+        positionPaddle(_event.detail.position.x);
         if (state == STATE.START && _event.type != ƒ.EVENT_TOUCH.MOVE)
             startBall();
     }
@@ -74,7 +72,10 @@ var Arkanoid;
         ball.element.setAttribute("type", "");
         paddle.element.setAttribute("type", "");
     }
-    function positionPaddle() {
+    function positionPaddle(_x = paddle.position.x) {
+        if (state == STATE.HIT)
+            return;
+        paddle.position.x = _x;
         paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale);
         if (state == STATE.START)
             ball.position = { x: paddle.position.x, y: paddle.position.y - paddle.scale.y / 2 - radius };
@@ -126,7 +127,7 @@ var Arkanoid;
             if (hit.class == "paddle") {
                 console.log("Distractor hit");
                 paddle.element.setAttribute("type", "out");
-                restart();
+                state = STATE.HIT;
             }
             return;
         }
