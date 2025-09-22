@@ -27,9 +27,16 @@ var Frame;
     }
     function affectDocent(_which, _effect) {
         const span = document.querySelector("span#docents");
-        const img = span.children[_which];
-        let folder = "Dummy"; // img.id; 
-        img.src = `${Common.pathToPortraits}${folder}/${_effect}.png`;
+        for (let child in span.children)
+            if (_which != undefined && _which != Number(child))
+                continue;
+            else {
+                const img = span.children[child];
+                if (img.src.split("/").pop() == "Die.png") // don't change if already dead
+                    continue;
+                let folder = "Dummy"; // img.id; 
+                img.src = `${Common.pathToPortraits}${folder}/${_effect}.png`;
+            }
     }
 })(Frame || (Frame = {}));
 //# sourceMappingURL=Frame.js.map

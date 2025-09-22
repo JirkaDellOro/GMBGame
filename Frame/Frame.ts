@@ -33,12 +33,19 @@ namespace Frame {
       affectDocent(+iDocent, Common.MESSAGE.NEUTRAL);
     }
   }
-  
+
   function affectDocent(_which: number, _effect: Common.MESSAGE) {
     const span: HTMLSpanElement = document.querySelector("span#docents")!;
-    const img: HTMLImageElement = <HTMLImageElement>span.children[_which];
-    let folder: string = "Dummy"; // img.id; 
-    img.src = `${Common.pathToPortraits}${folder}/${_effect}.png`;
+    for (let child in span.children)
+      if (_which != undefined && _which != Number(child))
+        continue;
+      else {
+        const img: HTMLImageElement = <HTMLImageElement>span.children[child];
+        if (img.src.split("/").pop() == "Die.png") // don't change if already dead
+          continue;
+        let folder: string = "Dummy"; // img.id; 
+        img.src = `${Common.pathToPortraits}${folder}/${_effect}.png`;
+      }
   }
 }
 

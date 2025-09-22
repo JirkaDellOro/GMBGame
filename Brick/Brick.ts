@@ -1,22 +1,29 @@
 namespace Arkanoid {
   import ƒ = FudgeCore;
 
+  enum STATE {
+    START, RUN, OVER
+  }
+
   type Vector = { x: number; y: number; };
   type Entity = { element: HTMLSpanElement, position: Vector, scale: Vector };
   type Moveable = Entity & { velocity: Vector };
   type Hit = { entity: Entity, position: Vector, class: string };
 
-  let timePreviousFrame: number;
-
-  let game: HTMLElement;
   const moveables: Moveable[] = [];
-  let blocks: Entity[];
-  let paddle: Entity;
-
-  const nBalls: number = 1;
   const radius: number = 10;
   const blockSize: Vector = { x: 0, y: 0 };
   const gridSpace: Vector = { x: 5, y: 5 };
+  const timeToAttack: number = 1; //seconds to launch next attacking distractor
+  const velocity: Vector = { x: 0, y: -400 };
+
+  let timePreviousFrame: number;
+  let game: HTMLElement;
+  let blocks: Entity[];
+  let paddle: Entity;
+  let ball: Moveable;
+  let heartsHit: number = 0;
+  let state: STATE;
 
   window.addEventListener("load", hndLoad);
 
@@ -25,10 +32,8 @@ namespace Arkanoid {
     blockSize.x = game.clientWidth / 8;
     blockSize.y = blockSize.x / 2;
 
-    for (let i: number = 0; i < nBalls; i++) {
-      const ball: Moveable = createBall();
-      moveables.push(ball);
-    }
+    ball = createBall(); //first in moveable array
+    moveables.push(ball);
 
     blocks = await loadLevel("./Level.json");
 
@@ -37,13 +42,23 @@ namespace Arkanoid {
     blocks.unshift(paddle);
 
     document.addEventListener("mousemove", hndMouse);
+    document.addEventListener("click", hndMouse);
     let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game);
     touch.activate(true);
     game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
     game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
 
+    restart();
+
+    ƒ.Time.game.setTimer(timeToAttack * 1000, 0, hndTimer);
     timePreviousFrame = performance.now();
     update(timePreviousFrame);
+  }
+
+  function restart(): void {
+    ball.velocity = { x: 0, y: 0 };
+    state = STATE.START;
+    positionPaddle();
   }
 
   function update(_time: number): void {
@@ -51,25 +66,45 @@ namespace Arkanoid {
     timePreviousFrame = _time;
     timeDelta /= 1000;
 
-    processInput();
     move(timeDelta);
 
     requestAnimationFrame(update);
   }
 
-  function processInput(): void {
-
-  }
-
   function hndMouse(_event: MouseEvent): void {
     paddle.position.x = _event.clientX;
-    paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale)
+    positionPaddle();
+    if (state == STATE.START && _event.type == "click")
+      startBall();
   }
 
   function hndTouch(_event: CustomEvent): void {
     let detail: ƒ.EventTouchDetail = _event.detail;
     paddle.position.x = detail.position.x;
-    paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale)
+    positionPaddle();
+    if (state == STATE.START && _event.type == ƒ.EVENT_TOUCH.TAP)
+      startBall();
+  }
+
+  function startBall(): void {
+    velocity.x = Math.random() * 100 - 50;
+    ball.velocity = { x: velocity.x, y: velocity.y };
+    state = STATE.RUN;
+    ball.element.setAttribute("type", "");
+  }
+
+  function positionPaddle(): void {
+    paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale);
+    if (state == STATE.START)
+      ball.position = { x: paddle.position.x, y: paddle.position.y - paddle.scale.y / 2 - radius };
+
+  }
+
+  function hndTimer(_event: ƒ.EventTimer): void {
+    let hearts: Entity[] = blocks.filter((_entity: Entity) => _entity.element.className == "heart");
+    let heart: Entity = ƒ.Random.default.getElement(hearts);
+    moveables.push(createDistractor(heart.position, blockSize, "☠"));
+    sendMessage(Common.MESSAGE.KILL, +heart.element.getAttribute("type"));
   }
 
   function move(_timeDelta: number): void {
@@ -95,14 +130,26 @@ namespace Arkanoid {
 
   function processCollisions(_moveable: Moveable, _positionCheck: Vector): void {
     const hit: Hit | null = checkCollisions(_moveable, _positionCheck);
-    const isDistractor: boolean = _moveable.element.className == "distractor";
+
+    if (_moveable.position.y > paddle.position.y) {
+      if (_moveable == ball) {
+        ball.element.setAttribute("type", "out");
+        restart();
+        return;
+      }
+      else {
+        remove(moveables, moveables.indexOf(_moveable))
+        sendMessage(Common.MESSAGE.NEUTRAL)
+      }
+    }
 
     if (!hit)
       return;
 
-    if (isDistractor) {
+    if (_moveable != ball) {
       if (hit.class == "paddle")
         console.log("Distractor hit");
+
       return;
     }
 
@@ -116,8 +163,8 @@ namespace Arkanoid {
         break;
       case "heart":
         console.log("Heart Hit!");
-        let message: Common.Message = { type: Common.MESSAGE.HIT, docent: 1 };
-        parent.postMessage(message);
+        heartsHit++
+        sendMessage(Common.MESSAGE.DIE, +hit.entity.element.getAttribute("type"));
         moveables.push(createDistractor(hit.entity.position, blockSize, "♥"));
       default:
         const type: string = hit.entity.element.getAttribute("type")!;
@@ -170,8 +217,8 @@ namespace Arkanoid {
 
   function createBall(): Moveable {
     const ball: Moveable = <Moveable>createEntity(
-      { x: 20 + Math.random() * game.clientWidth - 40, y: game.clientHeight - 40, }, 
-      { x: radius * 2, y: radius * 2 }, 
+      { x: 20 + Math.random() * game.clientWidth - 40, y: game.clientHeight - 40, },
+      { x: radius * 2, y: radius * 2 },
       "ball"
     );
     ball.velocity = { x: 400, y: -400 };
@@ -213,6 +260,11 @@ namespace Arkanoid {
     const element: HTMLElement = _collection[_index].element;
     element.parentElement!.removeChild(element);
     _collection.splice(_index, 1);
+  }
+
+  function sendMessage(_message: Common.MESSAGE, _docent?: number): void {
+    let message: Common.Message = { type: _message, docent: _docent };
+    parent.postMessage(message);
   }
 
   async function loadLevel(_filename: string): Promise<Entity[]> {

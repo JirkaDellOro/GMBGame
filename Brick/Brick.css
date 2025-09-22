@@ -20,12 +20,25 @@ span {
   width: 1px;
   height: 1px;
   font-size: 1px;
-  text-align: center;
-  vertical-align: top;
+  text-align: center; 
+}
+
+@keyframes blink {  0% {
+    background-color: red;
+  }
+  50% {
+    background-color: blue;
+  }
+  100% {
+    background-color: red;
+  }
 }
 
 .ball {
   border-radius: 50%;
+}
+.ball[type="out"] {
+  animation: blink 0.3s infinite;
 }
 
 .distractor {
@@ -54,4 +67,10 @@ span {
 
 .heart::after, .distractor[type="♥"]::after {
   content: "♥";
+}
+
+.distractor[type="☠"]::after {
+  content: "☠";
+  background-color: black;
+  color: white;
 }
