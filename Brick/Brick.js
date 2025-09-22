@@ -64,40 +64,39 @@ var Arkanoid;
                 positionNew.x = moveable.position.x;
             }
             processCollisions(moveable, positionNew);
+            moveable.position = positionNew;
+            moveable.element.style.transform = createMatrix(positionNew, 0, moveable.scale);
         }
     }
     function processCollisions(_moveable, _positionCheck) {
         const hit = checkCollisions(_moveable, _positionCheck);
         const isDistractor = _moveable.element.className == "distractor";
-        if (hit) {
-            if (isDistractor) {
-                if (hit.class == "paddle")
-                    console.log("Distractor hit");
-            }
-            else {
-                reflectBall(_moveable, hit);
-                switch (hit.class) {
-                    case "paddle":
-                        const deflect = 2 * hit.position.x / paddle.scale.x;
-                        if (_moveable.velocity.y < 0)
-                            _moveable.velocity.x = 200 * deflect;
-                        break;
-                    case "heart":
-                        console.log("Heart Hit!");
-                        let message = { type: Common.MESSAGE.HIT, docent: 1 };
-                        parent.postMessage(message);
-                        moveables.push(createDistractor(hit.entity.position, blockSize));
-                    default:
-                        const type = hit.entity.element.getAttribute("type");
-                        if (Number(type) > 1)
-                            hit.entity.element.setAttribute("type", "" + (Number(type) - 1));
-                        else
-                            remove(blocks, blocks.indexOf(hit.entity));
-                }
-            }
+        if (!hit)
+            return;
+        if (isDistractor) {
+            if (hit.class == "paddle")
+                console.log("Distractor hit");
+            return;
         }
-        _moveable.position = _positionCheck;
-        _moveable.element.style.transform = createMatrix(_positionCheck, 0, { x: radius * 2, y: radius * 2 });
+        reflectBall(_moveable, hit);
+        switch (hit.class) {
+            case "paddle":
+                const deflect = 2 * hit.position.x / paddle.scale.x;
+                if (_moveable.velocity.y < 0)
+                    _moveable.velocity.x = 200 * deflect;
+                break;
+            case "heart":
+                console.log("Heart Hit!");
+                let message = { type: Common.MESSAGE.HIT, docent: 1 };
+                parent.postMessage(message);
+                moveables.push(createDistractor(hit.entity.position, blockSize, "♥"));
+            default:
+                const type = hit.entity.element.getAttribute("type");
+                if (Number(type) > 1)
+                    hit.entity.element.setAttribute("type", "" + (Number(type) - 1));
+                else
+                    remove(blocks, blocks.indexOf(hit.entity));
+        }
     }
     function checkCollisions(_moveable, _position) {
         for (let iBlock = 0; iBlock < blocks.length; iBlock++) {
@@ -134,12 +133,12 @@ var Arkanoid;
         return "matrix(" + matrix.toString() + ")";
     }
     function createBall() {
-        const ball = createEntity({ x: 20 + Math.random() * game.clientWidth - 40, y: game.clientHeight - 40, }, "ball");
+        const ball = createEntity({ x: 20 + Math.random() * game.clientWidth - 40, y: game.clientHeight - 40, }, { x: radius * 2, y: radius * 2 }, "ball");
         ball.velocity = { x: 400, y: -400 };
         return ball;
     }
-    function createDistractor(_position, _size) {
-        const distractor = createBlock(_position, _size, "distractor");
+    function createDistractor(_position, _size, _type) {
+        const distractor = createBlock(_position, _size, _type);
         distractor.velocity = { x: 0, y: 100 };
         distractor.element.className = "distractor";
         return distractor;
@@ -150,16 +149,16 @@ var Arkanoid;
         return paddle;
     }
     function createBlock(_position, _size, _type) {
-        const block = createEntity(_position, "block");
-        block.scale = { x: _size.x, y: _size.y };
+        const block = createEntity(_position, _size, "block");
         block.element.style.transform = createMatrix(block.position, 0, block.scale);
         block.element.setAttribute("type", _type);
         return block;
     }
-    function createEntity(_position, _type) {
+    function createEntity(_position, _size, _type) {
         const entity = {
             element: document.createElement("span"),
-            position: _position
+            position: _position,
+            scale: _size
         };
         entity.element.className = _type;
         game.appendChild(entity.element);

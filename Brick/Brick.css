@@ -29,7 +29,11 @@ span {
 }
 
 .distractor {
-  border-radius: 20%;
+  border-radius: 30%;
+}
+
+.distractor[type="♥"] {
+  background-color: red;
 }
 
 .paddle {
@@ -43,9 +47,11 @@ span {
 .block[type="2"] {
   background-color: lightblue;
 }
-.heart{
+
+.heart {
   background-color: red;
 }
-.heart::after {
+
+.heart::after, .distractor[type="♥"]::after {
   content: "♥";
 }
