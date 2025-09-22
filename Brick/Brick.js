@@ -11,7 +11,7 @@ var Arkanoid;
     const radius = 10;
     const blockSize = { x: 0, y: 0 };
     const gridSpace = { x: 5, y: 5 };
-    const timeToAttack = 1; //seconds to launch next attacking distractor
+    const timeToAttack = 5; //seconds to launch next attacking distractor
     const velocity = { x: 0, y: -400 };
     let timePreviousFrame;
     let game;
@@ -72,6 +72,7 @@ var Arkanoid;
         ball.velocity = { x: velocity.x, y: velocity.y };
         state = STATE.RUN;
         ball.element.setAttribute("type", "");
+        paddle.element.setAttribute("type", "");
     }
     function positionPaddle() {
         paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale);
@@ -79,6 +80,8 @@ var Arkanoid;
             ball.position = { x: paddle.position.x, y: paddle.position.y - paddle.scale.y / 2 - radius };
     }
     function hndTimer(_event) {
+        if (state != STATE.RUN)
+            return;
         let hearts = blocks.filter((_entity) => _entity.element.className == "heart");
         let heart = ƒ.Random.default.getElement(hearts);
         moveables.push(createDistractor(heart.position, blockSize, "☠"));
@@ -120,8 +123,11 @@ var Arkanoid;
         if (!hit)
             return;
         if (_moveable != ball) {
-            if (hit.class == "paddle")
+            if (hit.class == "paddle") {
                 console.log("Distractor hit");
+                paddle.element.setAttribute("type", "out");
+                restart();
+            }
             return;
         }
         reflectBall(_moveable, hit);

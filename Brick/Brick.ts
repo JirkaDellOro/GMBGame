@@ -14,7 +14,7 @@ namespace Arkanoid {
   const radius: number = 10;
   const blockSize: Vector = { x: 0, y: 0 };
   const gridSpace: Vector = { x: 5, y: 5 };
-  const timeToAttack: number = 1; //seconds to launch next attacking distractor
+  const timeToAttack: number = 5; //seconds to launch next attacking distractor
   const velocity: Vector = { x: 0, y: -400 };
 
   let timePreviousFrame: number;
@@ -91,6 +91,7 @@ namespace Arkanoid {
     ball.velocity = { x: velocity.x, y: velocity.y };
     state = STATE.RUN;
     ball.element.setAttribute("type", "");
+    paddle.element.setAttribute("type", "");
   }
 
   function positionPaddle(): void {
@@ -100,6 +101,9 @@ namespace Arkanoid {
   }
 
   function hndTimer(_event: ƒ.EventTimer): void {
+    if (state != STATE.RUN)
+      return;
+
     let hearts: Entity[] = blocks.filter((_entity: Entity) => _entity.element.className == "heart");
     let heart: Entity = ƒ.Random.default.getElement(hearts);
     moveables.push(createDistractor(heart.position, blockSize, "☠"));
@@ -148,9 +152,11 @@ namespace Arkanoid {
       return;
 
     if (_moveable != ball) {
-      if (hit.class == "paddle")
+      if (hit.class == "paddle") {
         console.log("Distractor hit");
-
+        paddle.element.setAttribute("type", "out");
+        restart();
+      }
       return;
     }
 
