@@ -46,6 +46,7 @@ namespace Arkanoid {
     touch.activate(true);
     game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
     game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
+    game.addEventListener(ƒ.EVENT_TOUCH.LONG, hndTouch);
 
     restart();
 
@@ -81,7 +82,7 @@ namespace Arkanoid {
     let detail: ƒ.EventTouchDetail = _event.detail;
     paddle.position.x = detail.position.x;
     positionPaddle();
-    if (state == STATE.START && _event.type == ƒ.EVENT_TOUCH.TAP)
+    if (state == STATE.START && _event.type != ƒ.EVENT_TOUCH.MOVE)
       startBall();
   }
 

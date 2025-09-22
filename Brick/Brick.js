@@ -36,6 +36,7 @@ var Arkanoid;
         touch.activate(true);
         game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
         game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
+        game.addEventListener(ƒ.EVENT_TOUCH.LONG, hndTouch);
         restart();
         ƒ.Time.game.setTimer(timeToAttack * 1000, 0, hndTimer);
         timePreviousFrame = performance.now();
@@ -63,7 +64,7 @@ var Arkanoid;
         let detail = _event.detail;
         paddle.position.x = detail.position.x;
         positionPaddle();
-        if (state == STATE.START && _event.type == ƒ.EVENT_TOUCH.TAP)
+        if (state == STATE.START && _event.type != ƒ.EVENT_TOUCH.MOVE)
             startBall();
     }
     function startBall() {

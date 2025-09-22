@@ -9,7 +9,7 @@ div {
 }
 
 div#game {
-  /* aspect-ratio: 1/2; */
+  aspect-ratio: 1/2;
   background-color: darkblue;
 }
 
