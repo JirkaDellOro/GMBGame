@@ -18,7 +18,6 @@ var Arkanoid;
     let blocks;
     let paddle;
     let ball;
-    let heartsHit = 0;
     let state;
     window.addEventListener("load", hndLoad);
     async function hndLoad() {
@@ -85,6 +84,8 @@ var Arkanoid;
         sendMessage(Common.MESSAGE.KILL, +heart.element.getAttribute("type"));
     }
     function move(_timeDelta) {
+        if (state == STATE.OVER)
+            return;
         for (const moveable of moveables) {
             let positionNew = {
                 x: moveable.position.x + moveable.velocity.x * _timeDelta, y: moveable.position.y + moveable.velocity.y * _timeDelta
@@ -131,7 +132,6 @@ var Arkanoid;
                 break;
             case "heart":
                 console.log("Heart Hit!");
-                heartsHit++;
                 sendMessage(Common.MESSAGE.DIE, +hit.entity.element.getAttribute("type"));
                 moveables.push(createDistractor(hit.entity.position, blockSize, "♥"));
             default:
@@ -141,6 +141,8 @@ var Arkanoid;
                 else
                     remove(blocks, blocks.indexOf(hit.entity));
         }
+        if (game.querySelectorAll("span.heart").length == 0)
+            state = STATE.OVER;
     }
     function checkCollisions(_moveable, _position) {
         for (let iBlock = 0; iBlock < blocks.length; iBlock++) {

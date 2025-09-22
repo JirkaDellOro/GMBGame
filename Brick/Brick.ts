@@ -22,7 +22,6 @@ namespace Arkanoid {
   let blocks: Entity[];
   let paddle: Entity;
   let ball: Moveable;
-  let heartsHit: number = 0;
   let state: STATE;
 
   window.addEventListener("load", hndLoad);
@@ -97,7 +96,6 @@ namespace Arkanoid {
     paddle.element.style.transform = createMatrix(paddle.position, 0, paddle.scale);
     if (state == STATE.START)
       ball.position = { x: paddle.position.x, y: paddle.position.y - paddle.scale.y / 2 - radius };
-
   }
 
   function hndTimer(_event: ƒ.EventTimer): void {
@@ -108,6 +106,8 @@ namespace Arkanoid {
   }
 
   function move(_timeDelta: number): void {
+    if (state == STATE.OVER)
+      return;
     for (const moveable of moveables) {
       let positionNew: Vector = {
         x: moveable.position.x + moveable.velocity.x * _timeDelta, y: moveable.position.y + moveable.velocity.y * _timeDelta
@@ -163,7 +163,6 @@ namespace Arkanoid {
         break;
       case "heart":
         console.log("Heart Hit!");
-        heartsHit++
         sendMessage(Common.MESSAGE.DIE, +hit.entity.element.getAttribute("type"));
         moveables.push(createDistractor(hit.entity.position, blockSize, "♥"));
       default:
@@ -173,6 +172,9 @@ namespace Arkanoid {
         else
           remove(blocks, blocks.indexOf(hit.entity));
     }
+
+    if (game.querySelectorAll("span.heart").length == 0)
+      state = STATE.OVER;
   }
 
   function checkCollisions(_moveable: Moveable, _position: Vector): Hit | null {
