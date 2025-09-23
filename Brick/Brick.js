@@ -36,7 +36,7 @@ var Arkanoid;
         let touch = new ƒ.TouchEventDispatcher(game, 1);
         touch.activate(true);
         game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
-        game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
+        document.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
         game.addEventListener(ƒ.EVENT_TOUCH.LONG, hndTouch);
         restart();
         ƒ.Time.game.setTimer(timeToAttack * 1000, 0, hndTimer);
