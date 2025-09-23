@@ -53,6 +53,9 @@ namespace Arkanoid {
     ƒ.Time.game.setTimer(timeToAttack * 1000, 0, hndTimer);
     timePreviousFrame = performance.now();
     update(timePreviousFrame);
+
+    ƒ.DebugTextArea.textArea = document.querySelector("textarea");
+    ƒ.Debug.setFilter(ƒ.DebugTextArea, ƒ.DEBUG_FILTER.ALL);
   }
 
   function restart(): void {
@@ -72,21 +75,17 @@ namespace Arkanoid {
   }
 
   function hndMouse(_event: MouseEvent): void {
-    log(_event.type);
+    ƒ.Debug.log(_event.type);
     positionPaddle(_event.clientX);
     if (state == STATE.START && _event.type == "click")
       startBall();
   }
 
   function hndTouch(_event: CustomEvent): void {
-    log(_event.type);
+     ƒ.Debug.log(_event.type);
     positionPaddle(_event.detail.position.x);
     if (state == STATE.START && _event.type != ƒ.EVENT_TOUCH.MOVE)
       startBall();
-  }
-
-  function log(_text: string): void {
-    document.querySelector("textarea")!.innerHTML += _text + "\n";
   }
 
   function startBall(): void {
