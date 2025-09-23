@@ -47,7 +47,6 @@ namespace Arkanoid {
     touch.activate(true);
     game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
     game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
-    // game.addEventListener(ƒ.EVENT_TOUCH.LONG, hndTouch);
 
     restart();
 
@@ -55,8 +54,8 @@ namespace Arkanoid {
     timePreviousFrame = performance.now();
     update(timePreviousFrame);
 
-    ƒ.DebugTextArea.textArea = document.querySelector("textarea");
-    ƒ.Debug.setFilter(ƒ.DebugTextArea, ƒ.DEBUG_FILTER.ALL);
+    // ƒ.DebugTextArea.textArea = document.querySelector("textarea");
+    // ƒ.Debug.setFilter(ƒ.DebugTextArea, ƒ.DEBUG_FILTER.ALL);
   }
 
   function restart(): void {
@@ -76,14 +75,14 @@ namespace Arkanoid {
   }
 
   function hndMouse(_event: MouseEvent): void {
-    ƒ.Debug.log(_event.type);
+    // ƒ.Debug.log(_event.type);
     positionPaddle(_event.clientX);
     if (state == STATE.START && _event.type == "click")
       startBall();
   }
 
   function hndTouch(_event: CustomEvent): void {
-    ƒ.Debug.log(_event.type);
+    // ƒ.Debug.log(_event.type);
     positionPaddle(_event.detail.position.x);
     if (state == STATE.START && _event.type != ƒ.EVENT_TOUCH.MOVE)
       startBall();
