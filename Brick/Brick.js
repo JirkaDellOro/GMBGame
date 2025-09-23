@@ -33,7 +33,7 @@ var Arkanoid;
         blocks.unshift(paddle);
         document.addEventListener("mousemove", hndMouse);
         document.addEventListener("click", hndMouse);
-        let touch = new ƒ.TouchEventDispatcher(game);
+        let touch = new ƒ.TouchEventDispatcher(game, 50);
         touch.activate(true);
         game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
         game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
