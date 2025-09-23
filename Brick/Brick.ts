@@ -28,6 +28,7 @@ namespace Arkanoid {
 
   async function hndLoad(): Promise<void> {
     game = document.querySelector("div#game")!;
+    /*
     blockSize.x = game.clientWidth / 8;
     blockSize.y = blockSize.x / 2;
 
@@ -39,7 +40,7 @@ namespace Arkanoid {
     paddle = createPaddle({ x: game.clientWidth / 2, y: game.clientHeight * 0.9 }, { x: blockSize.x * 2, y: blockSize.y });
     game.appendChild(paddle.element);
     blocks.unshift(paddle);
-
+*/
     document.addEventListener("mousemove", hndMouse);
     document.addEventListener("click", hndMouse);
     let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game, 50);
@@ -47,13 +48,13 @@ namespace Arkanoid {
     game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
     game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
     game.addEventListener(ƒ.EVENT_TOUCH.LONG, hndTouch);
-
+/*
     restart();
 
     ƒ.Time.game.setTimer(timeToAttack * 1000, 0, hndTimer);
     timePreviousFrame = performance.now();
     update(timePreviousFrame);
-
+*/
     ƒ.DebugTextArea.textArea = document.querySelector("textarea");
     ƒ.Debug.setFilter(ƒ.DebugTextArea, ƒ.DEBUG_FILTER.ALL);
   }
@@ -76,16 +77,16 @@ namespace Arkanoid {
 
   function hndMouse(_event: MouseEvent): void {
     ƒ.Debug.log(_event.type);
-    positionPaddle(_event.clientX);
-    if (state == STATE.START && _event.type == "click")
-      startBall();
+    // positionPaddle(_event.clientX);
+    // if (state == STATE.START && _event.type == "click")
+    //   startBall();
   }
 
   function hndTouch(_event: CustomEvent): void {
-     ƒ.Debug.log(_event.type);
-    positionPaddle(_event.detail.position.x);
-    if (state == STATE.START && _event.type != ƒ.EVENT_TOUCH.MOVE)
-      startBall();
+    ƒ.Debug.log(_event.type);
+    // positionPaddle(_event.detail.position.x);
+    // if (state == STATE.START && _event.type != ƒ.EVENT_TOUCH.MOVE)
+    //   startBall();
   }
 
   function startBall(): void {

@@ -23,14 +23,19 @@ var Arkanoid;
     window.addEventListener("load", hndLoad);
     async function hndLoad() {
         game = document.querySelector("div#game");
+        /*
         blockSize.x = game.clientWidth / 8;
         blockSize.y = blockSize.x / 2;
+    
         ball = createBall(); //first in moveable array
         moveables.push(ball);
+    
         blocks = await loadLevel("./Level.json");
+    
         paddle = createPaddle({ x: game.clientWidth / 2, y: game.clientHeight * 0.9 }, { x: blockSize.x * 2, y: blockSize.y });
         game.appendChild(paddle.element);
         blocks.unshift(paddle);
+    */
         document.addEventListener("mousemove", hndMouse);
         document.addEventListener("click", hndMouse);
         let touch = new ƒ.TouchEventDispatcher(game, 50);
@@ -38,10 +43,13 @@ var Arkanoid;
         game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
         game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
         game.addEventListener(ƒ.EVENT_TOUCH.LONG, hndTouch);
-        restart();
-        ƒ.Time.game.setTimer(timeToAttack * 1000, 0, hndTimer);
-        timePreviousFrame = performance.now();
-        update(timePreviousFrame);
+        /*
+            restart();
+        
+            ƒ.Time.game.setTimer(timeToAttack * 1000, 0, hndTimer);
+            timePreviousFrame = performance.now();
+            update(timePreviousFrame);
+        */
         ƒ.DebugTextArea.textArea = document.querySelector("textarea");
         ƒ.Debug.setFilter(ƒ.DebugTextArea, ƒ.DEBUG_FILTER.ALL);
     }
@@ -59,15 +67,15 @@ var Arkanoid;
     }
     function hndMouse(_event) {
         ƒ.Debug.log(_event.type);
-        positionPaddle(_event.clientX);
-        if (state == STATE.START && _event.type == "click")
-            startBall();
+        // positionPaddle(_event.clientX);
+        // if (state == STATE.START && _event.type == "click")
+        //   startBall();
     }
     function hndTouch(_event) {
         ƒ.Debug.log(_event.type);
-        positionPaddle(_event.detail.position.x);
-        if (state == STATE.START && _event.type != ƒ.EVENT_TOUCH.MOVE)
-            startBall();
+        // positionPaddle(_event.detail.position.x);
+        // if (state == STATE.START && _event.type != ƒ.EVENT_TOUCH.MOVE)
+        //   startBall();
     }
     function startBall() {
         velocity.x = Math.random() * 100 - 50;
