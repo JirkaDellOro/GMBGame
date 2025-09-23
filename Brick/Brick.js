@@ -36,7 +36,7 @@ var Arkanoid;
         let touch = new ƒ.TouchEventDispatcher(game);
         touch.activate(true);
         game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
-        document.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
+        game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
         game.addEventListener(ƒ.EVENT_TOUCH.LONG, hndTouch);
         restart();
         ƒ.Time.game.setTimer(timeToAttack * 1000, 0, hndTimer);
@@ -56,14 +56,19 @@ var Arkanoid;
         requestAnimationFrame(update);
     }
     function hndMouse(_event) {
+        log(_event.type);
         positionPaddle(_event.clientX);
         if (state == STATE.START && _event.type == "click")
             startBall();
     }
     function hndTouch(_event) {
+        log(_event.type);
         positionPaddle(_event.detail.position.x);
         if (state == STATE.START && _event.type != ƒ.EVENT_TOUCH.MOVE)
             startBall();
+    }
+    function log(_text) {
+        document.querySelector("textarea").innerHTML += _text + "\n";
     }
     function startBall() {
         velocity.x = Math.random() * 100 - 50;

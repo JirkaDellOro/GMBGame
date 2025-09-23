@@ -8,7 +8,12 @@
   <script>
     f = FudgeCore;
     console.log(f);
-    f.
+    
+    document.addEventListener("click", hndMouse);
+    let touch = new f.TouchEventDispatcher(game);
+    touch.activate(true);
+    document.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
+    document.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
   </script>
 </head>
 <body>
