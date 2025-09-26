@@ -89,7 +89,7 @@ var Arkanoid;
         let hearts = blocks.filter((_entity) => _entity.element.className == "heart");
         let heart = ƒ.Random.default.getElement(hearts);
         moveables.push(createDistractor(heart.position, blockSize, "☠"));
-        sendMessage(Common.MESSAGE.KILL, +heart.element.getAttribute("type"));
+        sendMessage(Common.MESSAGE.ANGRY, +heart.element.getAttribute("type"));
     }
     function move(_timeDelta) {
         if (state == STATE.OVER)
@@ -121,7 +121,7 @@ var Arkanoid;
             }
             else {
                 remove(moveables, moveables.indexOf(_moveable));
-                sendMessage(Common.MESSAGE.NEUTRAL);
+                sendMessage(Common.MESSAGE.IDLE);
             }
         }
         if (!hit)
@@ -143,7 +143,7 @@ var Arkanoid;
                 break;
             case "heart":
                 console.log("Heart Hit!");
-                sendMessage(Common.MESSAGE.DIE, +hit.entity.element.getAttribute("type"));
+                sendMessage(Common.MESSAGE.DEAD, +hit.entity.element.getAttribute("type"));
                 moveables.push(createDistractor(hit.entity.position, blockSize, "♥"));
             default:
                 const type = hit.entity.element.getAttribute("type");

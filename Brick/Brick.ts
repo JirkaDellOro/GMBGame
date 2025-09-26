@@ -112,7 +112,7 @@ namespace Arkanoid {
     let hearts: Entity[] = blocks.filter((_entity: Entity) => _entity.element.className == "heart");
     let heart: Entity = ƒ.Random.default.getElement(hearts);
     moveables.push(createDistractor(heart.position, blockSize, "☠"));
-    sendMessage(Common.MESSAGE.KILL, +heart.element.getAttribute("type"));
+    sendMessage(Common.MESSAGE.ANGRY, +heart.element.getAttribute("type"));
   }
 
   function move(_timeDelta: number): void {
@@ -149,7 +149,7 @@ namespace Arkanoid {
       }
       else {
         remove(moveables, moveables.indexOf(_moveable))
-        sendMessage(Common.MESSAGE.NEUTRAL)
+        sendMessage(Common.MESSAGE.IDLE)
       }
     }
 
@@ -175,7 +175,7 @@ namespace Arkanoid {
         break;
       case "heart":
         console.log("Heart Hit!");
-        sendMessage(Common.MESSAGE.DIE, +hit.entity.element.getAttribute("type"));
+        sendMessage(Common.MESSAGE.DEAD, +hit.entity.element.getAttribute("type"));
         moveables.push(createDistractor(hit.entity.position, blockSize, "♥"));
       default:
         const type: string = hit.entity.element.getAttribute("type")!;

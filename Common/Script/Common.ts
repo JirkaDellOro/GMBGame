@@ -1,9 +1,9 @@
 namespace Common {
   export enum MESSAGE {
-    KILL="Kill", 
-    HIT="Hit", 
-    NEUTRAL="Neutral",
-    DIE="Die"
+    ANGRY="Angry", 
+    HURT="Hurt", 
+    IDLE="Idle",
+    DEAD="Dead"
   }
 
   export type Message = {type:MESSAGE, docent?: number};
