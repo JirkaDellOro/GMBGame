@@ -1,5 +1,5 @@
-var Arkanoid;
-(function (Arkanoid) {
+var Brick;
+(function (Brick) {
     var ƒ = FudgeCore;
     let STATE;
     (function (STATE) {
@@ -265,5 +265,5 @@ var Arkanoid;
         }
         return blocks;
     }
-})(Arkanoid || (Arkanoid = {}));
+})(Brick || (Brick = {}));
 //# sourceMappingURL=Brick.js.map

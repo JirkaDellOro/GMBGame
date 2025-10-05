@@ -1,4 +1,6 @@
-body, html, iframe {
+body,
+html,
+iframe {
   height: 100%;
   width: 100%;
   margin: 0px;
@@ -19,15 +21,27 @@ div {
 div#header {
   display: grid;
   grid-template-columns: auto auto auto;
+  object-fit: contain;
+  display: flex;
 }
 
 span {
   text-align: center;
 }
 
+figure {
+  height: 100%;
+  display: inline-block;
+  margin: 0px;
+  padding: 0px;
+}
+
+figcaption {
+  position: relative;
+  bottom: 1em;
+  background-color: #ffffff80;
+}
+
 img {
-  height: 10%;
-  /* height: 10px; */
-  /* padding-top: 2%; */
-  /* aspect-ratio: 1/1; */
+  height: 100%;
 }

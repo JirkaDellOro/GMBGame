@@ -1,4 +1,4 @@
-namespace Arkanoid {
+namespace Brick {
   import ƒ = FudgeCore;
 
   enum STATE {

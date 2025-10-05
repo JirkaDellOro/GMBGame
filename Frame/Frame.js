@@ -31,17 +31,18 @@ var Frame;
         let span = document.querySelector("span#docents");
         span.innerHTML = "";
         for (let iDocent in _docents) {
-            span.innerHTML += `<img src="" id="${_docents[iDocent]}">`;
+            const docent = docents[_docents[iDocent]];
+            span.innerHTML += `<figure><img src="" id="${_docents[iDocent]}"/><figcaption>${docent.first}</figcaption></figure>`;
             affectDocent(+iDocent, Common.MESSAGE.IDLE);
         }
     }
     function affectDocent(_which, _effect) {
-        const span = document.querySelector("span#docents");
-        for (let child in span.children)
-            if (_which != undefined && _which != Number(child))
+        const images = document.querySelector("span#docents").querySelectorAll("img");
+        for (let iImage in images)
+            if (_which != undefined && _which != Number(iImage))
                 continue;
             else {
-                const img = span.children[child];
+                const img = images[iImage];
                 if (img.src.endsWith("Dead.png")) // don't change if already dead
                     continue;
                 img.src = `${Common.pathToPortraits}${img.id}_${_effect}.png`;
