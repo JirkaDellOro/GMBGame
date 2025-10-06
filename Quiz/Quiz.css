@@ -1,14 +1,20 @@
 html,
-body,
-div {
+body {
   height: 100%;
   margin: 0px;
   padding: 0px;
   overflow: hidden;
-  background-color: black;
+  background-color: rgb(255, 255, 255);
   touch-action: none;
 }
 
+span {
+  background-color: white;
+  display: block;
+}
+
+
+/* 
 div#game {
   aspect-ratio: 1/2;
   background-color: darkblue;
@@ -18,16 +24,6 @@ textarea {
   position: fixed;
   top: 100px;
   background-color: #ffffff88;
-}
-
-span {
-  background-color: white;
-  display: inline-block;
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  font-size: 1px;
-  text-align: center;
 }
 
 @keyframes blink {
@@ -85,4 +81,4 @@ span {
   content: "☠";
   background-color: black;
   color: white;
-}
+} */
