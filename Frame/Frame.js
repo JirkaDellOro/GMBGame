@@ -40,19 +40,13 @@ var Frame;
     }
     function affectDocent(_which, _effect) {
         const images = document.querySelector("span#docents").querySelectorAll("img");
-        let docent;
+        let docent = _which.toString();
         if (typeof (_which) == "number")
-            docent = _which;
-        else
-            images.forEach((_node, _index) => {
-                if (_node.id == _which)
-                    docent = _index;
-            });
-        for (let iImage in images)
-            if (docent != undefined && docent != Number(iImage))
+            docent = images[_which].id;
+        for (const img of images)
+            if (docent != undefined && docent != img.id) // affect only image with the id docent, or all docent chosen
                 continue;
             else {
-                const img = images[iImage];
                 if (img.src.endsWith("Dead.png")) // don't change if already dead
                     continue;
                 img.src = `${Common.pathToPortraits}${img.id}_${_effect}.png`;

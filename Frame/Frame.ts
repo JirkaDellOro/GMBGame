@@ -52,21 +52,15 @@ namespace Frame {
 
   function affectDocent(_which: number | string, _effect: Common.MESSAGE) {
     const images: NodeListOf<HTMLImageElement> = document.querySelector("span#docents")!.querySelectorAll("img");
-    
-    let docent: number;
-    if (typeof (_which) == "number")
-      docent = _which;
-    else
-      images.forEach((_node: HTMLImageElement, _index: number) => {
-        if (_node.id == _which)
-          docent = _index
-      });
 
-    for (let iImage in images)
-      if (docent != undefined && docent != Number(iImage))
+    let docent: string = _which.toString();
+    if (typeof (_which) == "number")
+      docent = images[_which].id;
+
+    for (const img of images)
+      if (docent != undefined && docent != img.id) // affect only image with the id docent, or all docent chosen
         continue;
       else {
-        const img: HTMLImageElement = images[iImage];
         if (img.src.endsWith("Dead.png")) // don't change if already dead
           continue;
         img.src = `${Common.pathToPortraits}${img.id}_${_effect}.png`;
