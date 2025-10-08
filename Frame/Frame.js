@@ -11,7 +11,7 @@ var Frame;
         "JT": { title: "MA", first: "Julien", name: "Trübiger", skills: [] },
         "CM": { title: "Prof.", first: "Christoph", name: "Müller", skills: [] },
         "CF": { title: "Dipl.-Vw.", first: "Christian", name: "Franz", skills: [] },
-        "NH": { title: "MA", first: "Niv", name: "Shpigel", skills: [] },
+        "NH": { title: "B.F.A", first: "Niv", name: "Shpigel", skills: [] },
     };
     const data = [
         [
@@ -40,8 +40,16 @@ var Frame;
     }
     function affectDocent(_which, _effect) {
         const images = document.querySelector("span#docents").querySelectorAll("img");
+        let docent;
+        if (typeof (_which) == "number")
+            docent = _which;
+        else
+            images.forEach((_node, _index) => {
+                if (_node.id == _which)
+                    docent = _index;
+            });
         for (let iImage in images)
-            if (_which != undefined && _which != Number(iImage))
+            if (docent != undefined && docent != Number(iImage))
                 continue;
             else {
                 const img = images[iImage];

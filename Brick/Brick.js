@@ -89,7 +89,7 @@ var Brick;
         let hearts = blocks.filter((_entity) => _entity.element.className == "heart");
         let heart = ƒ.Random.default.getElement(hearts);
         moveables.push(createDistractor(heart.position, blockSize, "☠"));
-        sendMessage(Common.MESSAGE.ANGRY, +heart.element.getAttribute("type"));
+        Common.sendMessage(Common.MESSAGE.ANGRY, +heart.element.getAttribute("type"));
     }
     function move(_timeDelta) {
         if (state == STATE.OVER)
@@ -121,7 +121,7 @@ var Brick;
             }
             else {
                 remove(moveables, moveables.indexOf(_moveable));
-                sendMessage(Common.MESSAGE.IDLE);
+                Common.sendMessage(Common.MESSAGE.IDLE);
             }
         }
         if (!hit)
@@ -143,7 +143,7 @@ var Brick;
                 break;
             case "heart":
                 console.log("Heart Hit!");
-                sendMessage(Common.MESSAGE.DEAD, +hit.entity.element.getAttribute("type"));
+                Common.sendMessage(Common.MESSAGE.DEAD, +hit.entity.element.getAttribute("type"));
                 moveables.push(createDistractor(hit.entity.position, blockSize, "♥"));
             default:
                 const type = hit.entity.element.getAttribute("type");
@@ -225,10 +225,6 @@ var Brick;
         const element = _collection[_index].element;
         element.parentElement.removeChild(element);
         _collection.splice(_index, 1);
-    }
-    function sendMessage(_message, _docent) {
-        let message = { type: _message, docent: _docent };
-        parent.postMessage(message);
     }
     async function loadLevel(_filename) {
         const blocks = [];

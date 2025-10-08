@@ -112,7 +112,7 @@ namespace Brick {
     let hearts: Entity[] = blocks.filter((_entity: Entity) => _entity.element.className == "heart");
     let heart: Entity = ƒ.Random.default.getElement(hearts);
     moveables.push(createDistractor(heart.position, blockSize, "☠"));
-    sendMessage(Common.MESSAGE.ANGRY, +heart.element.getAttribute("type"));
+    Common.sendMessage(Common.MESSAGE.ANGRY, +heart.element.getAttribute("type"));
   }
 
   function move(_timeDelta: number): void {
@@ -149,7 +149,7 @@ namespace Brick {
       }
       else {
         remove(moveables, moveables.indexOf(_moveable))
-        sendMessage(Common.MESSAGE.IDLE)
+        Common.sendMessage(Common.MESSAGE.IDLE)
       }
     }
 
@@ -175,7 +175,7 @@ namespace Brick {
         break;
       case "heart":
         console.log("Heart Hit!");
-        sendMessage(Common.MESSAGE.DEAD, +hit.entity.element.getAttribute("type"));
+        Common.sendMessage(Common.MESSAGE.DEAD, +hit.entity.element.getAttribute("type"));
         moveables.push(createDistractor(hit.entity.position, blockSize, "♥"));
       default:
         const type: string = hit.entity.element.getAttribute("type")!;
@@ -274,11 +274,6 @@ namespace Brick {
     const element: HTMLElement = _collection[_index].element;
     element.parentElement!.removeChild(element);
     _collection.splice(_index, 1);
-  }
-
-  function sendMessage(_message: Common.MESSAGE, _docent?: number): void {
-    let message: Common.Message = { type: _message, docent: _docent };
-    parent.postMessage(message);
   }
 
   async function loadLevel(_filename: string): Promise<Entity[]> {

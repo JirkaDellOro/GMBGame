@@ -8,5 +8,10 @@ var Common;
         MESSAGE["DEAD"] = "Dead";
     })(MESSAGE = Common.MESSAGE || (Common.MESSAGE = {}));
     Common.pathToPortraits = "Common/Header/Portraits/";
+    function sendMessage(_message, _docent) {
+        let message = { type: _message, docent: _docent };
+        parent.postMessage(message);
+    }
+    Common.sendMessage = sendMessage;
 })(Common || (Common = {}));
 //# sourceMappingURL=Common.js.map

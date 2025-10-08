@@ -10,14 +10,15 @@ var Quiz;
     async function start() {
         let tasks = await createTasks();
         while (tasks.length) {
-            let task = ƒ.random.splice(tasks).task;
-            console.log(task);
-            createHTML(task);
+            let task = ƒ.random.splice(tasks);
+            createHTML(task.task);
             let button = document.querySelector("button");
             await new Promise((_resolve) => {
                 let hndClick = () => {
                     button.removeEventListener("click", hndClick);
-                    validate(task);
+                    if (validate(task.task)) {
+                        Common.sendMessage(Common.MESSAGE.HURT, task.docent);
+                    }
                     _resolve(0);
                 };
                 button.addEventListener("click", hndClick);
@@ -42,7 +43,7 @@ var Quiz;
     function validate(_task) {
         const formdata = new FormData(document.forms[0]);
         const result = formdata.get("option");
-        console.log(result == "" + _task.correct);
+        return (result == "" + _task.correct);
     }
     function createHTML(_task) {
         let question = document.querySelector("div#Question");
