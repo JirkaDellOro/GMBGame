@@ -5,17 +5,46 @@ namespace Quiz {
     SC, MC
   }
   type Task = { type: TASK, question: string, options: string[], correct: number | number[] };
-
-  const tasks: Task[] = [
-    { type: TASK.SC, question: "Which city is germany's capital?", options: ["Berlin", "Hamburg", "München", "Frankfurt"], correct: 0 }
-  ];
+  type DocentTask = { docent: string, task: Task };
 
   window.addEventListener("load", start);
-  const task: Task = tasks[0];
 
-  function start(): void {
-    createHTML(task);
-    document.querySelector("button")!.addEventListener("click", () => validate(task));
+  async function start(): Promise<void> {
+    let tasks: DocentTask[] = await createTasks();
+    while (tasks.length) {
+      let task: Task = ƒ.random.splice(tasks).task;
+      console.log(task);
+      createHTML(task);
+      let button: HTMLButtonElement = document.querySelector("button")!;
+      await new Promise((_resolve) => {
+        let hndClick: EventListener = () => {
+          button.removeEventListener("click", hndClick);
+          validate(task);
+          _resolve(0);
+        }
+        button.addEventListener("click", hndClick);
+      });
+    }
+  }
+
+  async function createTasks(): Promise<DocentTask[]> {
+    const resonse: Response = await fetch("Visual1.json");
+    let tasksAll: DocentTask = await resonse.json();
+
+    let tasks: { docent: string, task: Task }[] = [];
+    let docents: string[] = <string[]>Reflect.ownKeys(tasksAll);
+
+    while (tasks.length < 3) {
+      let docent: string = docents.pop();
+      if (!docent)
+        docent = <string>ƒ.random.getElement(Reflect.ownKeys(tasksAll));
+
+      let task: Task = ƒ.random.splice(tasksAll[docent])
+      tasks.push({ docent: docent, task: task });
+    }
+    console.log(tasks);
+
+    return tasks;
   }
 
   function validate(_task: Task): void {
@@ -26,8 +55,9 @@ namespace Quiz {
 
   function createHTML(_task: Task): void {
     let question: HTMLDivElement = document.querySelector("div#Question")!;
+    question.innerText = _task.question;
     let options: HTMLDivElement = document.querySelector("div#Options")!;
-    question.innerText = tasks[0].question;
+    options.innerHTML = "";
     const spans: HTMLSpanElement[] = [];
 
     for (let option in _task.options) {

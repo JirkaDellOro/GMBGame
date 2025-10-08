@@ -6,14 +6,38 @@ var Quiz;
         TASK[TASK["SC"] = 0] = "SC";
         TASK[TASK["MC"] = 1] = "MC";
     })(TASK || (TASK = {}));
-    const tasks = [
-        { type: TASK.SC, question: "Which city is germany's capital?", options: ["Berlin", "Hamburg", "München", "Frankfurt"], correct: 0 }
-    ];
     window.addEventListener("load", start);
-    const task = tasks[0];
-    function start() {
-        createHTML(task);
-        document.querySelector("button").addEventListener("click", () => validate(task));
+    async function start() {
+        let tasks = await createTasks();
+        while (tasks.length) {
+            let task = ƒ.random.splice(tasks).task;
+            console.log(task);
+            createHTML(task);
+            let button = document.querySelector("button");
+            await new Promise((_resolve) => {
+                let hndClick = () => {
+                    button.removeEventListener("click", hndClick);
+                    validate(task);
+                    _resolve(0);
+                };
+                button.addEventListener("click", hndClick);
+            });
+        }
+    }
+    async function createTasks() {
+        const resonse = await fetch("Visual1.json");
+        let tasksAll = await resonse.json();
+        let tasks = [];
+        let docents = Reflect.ownKeys(tasksAll);
+        while (tasks.length < 3) {
+            let docent = docents.pop();
+            if (!docent)
+                docent = ƒ.random.getElement(Reflect.ownKeys(tasksAll));
+            let task = ƒ.random.splice(tasksAll[docent]);
+            tasks.push({ docent: docent, task: task });
+        }
+        console.log(tasks);
+        return tasks;
     }
     function validate(_task) {
         const formdata = new FormData(document.forms[0]);
@@ -22,8 +46,9 @@ var Quiz;
     }
     function createHTML(_task) {
         let question = document.querySelector("div#Question");
+        question.innerText = _task.question;
         let options = document.querySelector("div#Options");
-        question.innerText = tasks[0].question;
+        options.innerHTML = "";
         const spans = [];
         for (let option in _task.options) {
             const input = document.createElement("input");

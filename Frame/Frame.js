@@ -4,26 +4,28 @@ var Frame;
     window.addEventListener("message", (_event) => affectDocent(_event.data.docent, _event.data.type));
     let game;
     const docents = {
-        "NH": { title: "Prof.", first: "Nikolaus", name: "Hottong", skills: [] },
+        "NO": { title: "Prof.", first: "Nikolaus", name: "Hottong", skills: [] },
         "UH": { title: "Prof. Dr.", first: "Uwe", name: "Hahne", skills: [] },
         "NS": { title: "Prof. Dr.", first: "Norbert", name: "Schnell", skills: [] },
         "JD": { title: "Prof.", first: "Jirka", name: "Dell'Oro-Friedl", skills: [] },
         "JT": { title: "MA", first: "Julien", name: "Trübiger", skills: [] },
         "CM": { title: "Prof.", first: "Christoph", name: "Müller", skills: [] },
         "CF": { title: "Dipl.-Vw.", first: "Christian", name: "Franz", skills: [] },
+        "NH": { title: "MA", first: "Niv", name: "Shpigel", skills: [] },
     };
     const data = [
         [
-            { title: "Project 1", docents: ["CM", "UH"], game: "Brick/Brick.html", data: {} },
-            { title: "Code 1", docents: ["JD"], game: "Multiple", data: {} },
+            { title: "Project 1", docents: ["KO", "UH"], game: "Brick/Brick.html", data: {} },
+            { title: "Visual 1", docents: ["NH", "CM"], game: "Quiz/Quiz.html", data: { tasks: "Visual1.json" } },
             { title: "Theory 1", docents: ["TS"], game: "Multiple", data: {} }
         ]
     ];
     function start() {
         console.log("Start Frame");
-        let stage = data[0][0];
+        let stage = data[0][1];
         game = document.querySelector("iframe");
-        game.src = stage.game;
+        let query = new URLSearchParams(stage.data).toString();
+        game.src = stage.game + "?" + query;
         console.log(game, stage.game);
         setupHeader(stage.docents);
     }
