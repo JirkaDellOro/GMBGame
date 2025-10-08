@@ -11,8 +11,11 @@ namespace Quiz {
 
   async function start(): Promise<void> {
     let tasks: DocentTask[] = await createTasks();
+    let success: number = 0;
+
     while (tasks.length) {
       let task: DocentTask = ƒ.random.splice(tasks);
+      Common.sendMessage(Common.MESSAGE.ANGRY, task.docent);
       createHTML(task.task);
       let button: HTMLButtonElement = document.querySelector("button")!;
       await new Promise((_resolve) => {
@@ -20,12 +23,20 @@ namespace Quiz {
           button.removeEventListener("click", hndClick);
           if (validate(task.task)) {
             Common.sendMessage(Common.MESSAGE.HURT, task.docent);
+            success++;
           }
+          else
+            Common.sendMessage(Common.MESSAGE.IDLE, task.docent);
           _resolve(0);
         }
         button.addEventListener("click", hndClick);
       });
     }
+
+    if (success < 3)
+      Common.sendMessage(Common.MESSAGE.IDLE);
+    else
+      Common.sendMessage(Common.MESSAGE.DEAD);
   }
 
   async function createTasks(): Promise<DocentTask[]> {

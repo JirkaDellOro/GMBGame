@@ -40,9 +40,12 @@ var Frame;
     }
     function affectDocent(_which, _effect) {
         const images = document.querySelector("span#docents").querySelectorAll("img");
-        let docent = _which.toString();
-        if (typeof (_which) == "number")
-            docent = images[_which].id;
+        let docent;
+        if (_which) {
+            docent = _which.toString();
+            if (typeof (_which) == "number")
+                docent = images[_which].id;
+        }
         for (const img of images)
             if (docent != undefined && docent != img.id) // affect only image with the id docent, or all docent chosen
                 continue;

@@ -9,8 +9,10 @@ var Quiz;
     window.addEventListener("load", start);
     async function start() {
         let tasks = await createTasks();
+        let success = 0;
         while (tasks.length) {
             let task = ƒ.random.splice(tasks);
+            Common.sendMessage(Common.MESSAGE.ANGRY, task.docent);
             createHTML(task.task);
             let button = document.querySelector("button");
             await new Promise((_resolve) => {
@@ -18,12 +20,19 @@ var Quiz;
                     button.removeEventListener("click", hndClick);
                     if (validate(task.task)) {
                         Common.sendMessage(Common.MESSAGE.HURT, task.docent);
+                        success++;
                     }
+                    else
+                        Common.sendMessage(Common.MESSAGE.IDLE, task.docent);
                     _resolve(0);
                 };
                 button.addEventListener("click", hndClick);
             });
         }
+        if (success < 3)
+            Common.sendMessage(Common.MESSAGE.IDLE);
+        else
+            Common.sendMessage(Common.MESSAGE.DEAD);
     }
     async function createTasks() {
         const resonse = await fetch("Visual1.json");

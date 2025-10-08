@@ -50,13 +50,15 @@ namespace Frame {
     }
   }
 
-  function affectDocent(_which: number | string, _effect: Common.MESSAGE) {
+  function affectDocent(_which: number | string | undefined, _effect: Common.MESSAGE) {
     const images: NodeListOf<HTMLImageElement> = document.querySelector("span#docents")!.querySelectorAll("img");
 
-    let docent: string = _which.toString();
-    if (typeof (_which) == "number")
-      docent = images[_which].id;
-
+    let docent: string;
+    if (_which) {
+      docent = _which.toString();
+      if (typeof (_which) == "number")
+        docent = images[_which].id;
+    }
     for (const img of images)
       if (docent != undefined && docent != img.id) // affect only image with the id docent, or all docent chosen
         continue;
