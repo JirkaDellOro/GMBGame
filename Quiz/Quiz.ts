@@ -14,7 +14,9 @@ namespace Quiz {
     let success: number = 0;
 
     while (tasks.length) {
+      await ƒ.Time.game.delay(2000);
       let task: DocentTask = ƒ.random.splice(tasks);
+      Common.sendMessage(Common.MESSAGE.IDLE);
       Common.sendMessage(Common.MESSAGE.ANGRY, task.docent);
       createHTML(task.task);
       let button: HTMLButtonElement = document.querySelector("button")!;
