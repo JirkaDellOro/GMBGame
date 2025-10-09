@@ -44,4 +44,5 @@ figcaption {
 
 img {
   height: 100%;
+  image-rendering: pixelated;
 }
