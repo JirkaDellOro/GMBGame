@@ -1,7 +1,7 @@
 var Frame;
 (function (Frame) {
     window.addEventListener("load", start);
-    window.addEventListener("message", (_event) => affectDocent(_event.data.docent, _event.data.type));
+    window.addEventListener("message", (_event) => receiveMessage(_event.data));
     let game;
     const docents = {
         "NO": { title: "Prof.", first: "Nikolaus", name: "Hottong", skills: [] },
@@ -36,6 +36,20 @@ var Frame;
             const docent = docents[_docents[iDocent]];
             span.innerHTML += `<figure><img src="" id="${_docents[iDocent]}"/><figcaption>${docent.first}</figcaption></figure>`;
             affectDocent(+iDocent, Common.MESSAGE.IDLE);
+        }
+    }
+    function receiveMessage(_data) {
+        let message = _data.type;
+        switch (message) {
+            case Common.MESSAGE.FAIL:
+                console.log("FAIL!");
+                break;
+            case Common.MESSAGE.PASS:
+                console.log("PASS!");
+                break;
+            default:
+                affectDocent(_data.docent, message);
+                break;
         }
     }
     function affectDocent(_which, _effect) {

@@ -31,10 +31,13 @@ var Quiz;
                 button.addEventListener("click", hndClick);
             });
         }
-        if (success < 3)
+        if (success < 3) {
             Common.sendMessage(Common.MESSAGE.IDLE);
-        else
-            Common.sendMessage(Common.MESSAGE.DEAD);
+            Common.sendMessage(Common.MESSAGE.FAIL);
+            return;
+        }
+        Common.sendMessage(Common.MESSAGE.DEAD);
+        Common.sendMessage(Common.MESSAGE.PASS);
     }
     async function createTasks() {
         const resonse = await fetch("Visual1.json");

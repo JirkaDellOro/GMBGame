@@ -1,6 +1,6 @@
 namespace Frame {
   window.addEventListener("load", start);
-  window.addEventListener("message", (_event) => affectDocent(_event.data.docent, _event.data.type));
+  window.addEventListener("message", (_event) => receiveMessage(_event.data));
 
   let game: HTMLIFrameElement;
 
@@ -47,6 +47,23 @@ namespace Frame {
       const docent: Docent = docents[_docents[iDocent]];
       span.innerHTML += `<figure><img src="" id="${_docents[iDocent]}"/><figcaption>${docent.first}</figcaption></figure>`;
       affectDocent(+iDocent, Common.MESSAGE.IDLE);
+    }
+  }
+
+
+  function receiveMessage(_data: any): any {
+    let message: Common.MESSAGE = _data.type;
+
+    switch (message) {
+      case Common.MESSAGE.FAIL:
+        console.log("FAIL!");
+        break;
+      case Common.MESSAGE.PASS:
+        console.log("PASS!");
+        break;
+      default:
+        affectDocent(_data.docent, message);
+        break; 
     }
   }
 

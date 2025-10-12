@@ -3,7 +3,9 @@ namespace Common {
     ANGRY = "Angry",
     HURT = "Hurt",
     IDLE = "Idle",
-    DEAD = "Dead"
+    DEAD = "Dead",
+    FAIL = "Fail",
+    PASS = "Pass"
   }
 
   export type Message = { type: MESSAGE, docent?: number | string };

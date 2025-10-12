@@ -6,6 +6,8 @@ var Common;
         MESSAGE["HURT"] = "Hurt";
         MESSAGE["IDLE"] = "Idle";
         MESSAGE["DEAD"] = "Dead";
+        MESSAGE["FAIL"] = "Fail";
+        MESSAGE["PASS"] = "Pass";
     })(MESSAGE = Common.MESSAGE || (Common.MESSAGE = {}));
     Common.pathToPortraits = "Common/Header/Portraits/";
     function sendMessage(_message, _docent) {
