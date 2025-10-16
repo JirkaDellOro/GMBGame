@@ -1,5 +1,6 @@
 {
-  "Project 1": {
+  "P1": {
+    "title": "Project 1",
     "points": 5,
     "docents": [
       "NO",
@@ -9,7 +10,8 @@
     "data": {},
     "description": "The first thing you do when you get here...: create a game! In this 'Entry Project', you form a team with other students and just start. We will provide you with resources, teach some basics and help you manage your project."
   },
-  "Visual 1": {
+  "V1": {
+    "title": "Visual 1",
     "points": 6,
     "docents": [
       "NH",
@@ -21,7 +23,8 @@
     },
     "description": "Learn to visualize your ideas with pen and paper or even modelling clay. This hands on course teaches the very basics of concept art and visualization."
   },
-  "Theory 1": {
+  "T1": {
+    "title": "Theory 1",
     "points": 7,
     "docents": [
       "TS"
