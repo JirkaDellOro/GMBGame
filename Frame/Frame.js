@@ -25,9 +25,10 @@ var Frame;
         let stage = data[0][1];
         game = document.querySelector("iframe");
         let query = new URLSearchParams(stage.data).toString();
-        game.src = stage.game + "?" + query;
+        // game.src = stage.game + "?" + query;
+        game.src = "Frame/Dialog/Start.html" + "?" + query;
         console.log(game, stage.game);
-        setupHeader(stage.docents);
+        // setupHeader(stage.docents);
     }
     function setupHeader(_docents) {
         let span = document.querySelector("span#docents");

@@ -34,10 +34,11 @@ namespace Frame {
 
     game = document.querySelector("iframe");
     let query: string = new URLSearchParams(stage.data).toString()
-    game.src = stage.game + "?" + query;
+    // game.src = stage.game + "?" + query;
+    game.src = "Frame/Dialog/Start.html" + "?" + query;
     console.log(game, stage.game);
 
-    setupHeader(stage.docents);
+    // setupHeader(stage.docents);
   }
 
   function setupHeader(_docents: string[]) {
