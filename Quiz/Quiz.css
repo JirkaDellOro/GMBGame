@@ -13,6 +13,59 @@ span {
   display: block;
 }
 
+#Question {
+  display: flex;
+  justify-content: center;
+  padding: 1em;
+  font-size: 24pt;
+}
+
+#Options {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 1fr 1fr;
+  gap: 4em 8em;
+  margin: 5% 15%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button {
+  width: 10%;
+}
+
+#Options > span > input{
+  display: none;
+}
+
+
+#Options > span > label{
+  display: block;
+  padding: 0.8em 1em;
+  border: 2px solid #444;
+  background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+  color: white;
+  font-size: 1.1em;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+#Options > span > label:hover {
+  background: linear-gradient(to bottom, #3a3a3a, #222);
+  border-color: #777;
+}
+
+#Options > span > input:checked + label{
+  border-color: #0077ff;
+  box-shadow: 0 0 10px #0077ff80;
+  background: linear-gradient(to bottom, #0044aa, #002255);
+  color: #aaccff;
+}
 
 /* 
 div#game {
