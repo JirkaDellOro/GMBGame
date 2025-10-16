@@ -19,15 +19,15 @@ namespace Frame {
   async function start(): Promise<void> {
     console.log("Start Frame");
 
-    modules = await (await fetch("/Frame/Modules.json")).json();
-    docents = await (await fetch("/Frame/Docents.json")).json();
-    games = await (await fetch("/Frame/Games.json")).json();
-    curriculum = await (await fetch("/Frame/Curriculum.json")).json();
+    modules = await (await fetch(Common.root + "/Frame/Modules.json")).json();
+    docents = await (await fetch(Common.root + "/Frame/Docents.json")).json();
+    games = await (await fetch(Common.root + "/Frame/Games.json")).json();
+    curriculum = await (await fetch(Common.root + "/Frame/Curriculum.json")).json();
 
     const module: Module = modules[curriculum[0]];
 
     game = document.querySelector("iframe");
-    game.src = "Frame/Dialog/Start.html";
+    game.src = Common.root + "/Frame/Dialog/Start.html";
     await new Promise<void>((_resolve) => {
       game.addEventListener("load", () => { console.log("loaded"); _resolve(); });
     });
