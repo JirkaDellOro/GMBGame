@@ -15,15 +15,11 @@ var Frame;
         curriculum = await (await fetch("/Frame/Curriculum.json")).json();
         const module = modules[curriculum[0]];
         game = document.querySelector("iframe");
-        let query = new URLSearchParams(module.data).toString();
-        game.src = games[module.game].url + "?" + query;
-        console.log(game, module.game);
-        game.src = "Frame/Dialog/Start.html" + "?" + query;
+        game.src = "Frame/Dialog/Start.html";
         await new Promise((_resolve) => {
             game.addEventListener("load", () => { console.log("loaded"); _resolve(); });
         });
         setupStart(module);
-        // setupHeader(module.docents);
     }
     function setupStart(_module) {
         console.log("Setup Start Page");
@@ -31,6 +27,7 @@ var Frame;
         game.contentDocument.querySelector("div").textContent = _module.description;
         game.contentDocument.querySelector("div#Call").textContent = games[_module.game].callToAction;
         game.contentDocument.querySelector("input").value = "" + _module.points;
+        game.contentDocument.querySelector("button").addEventListener("click", () => startGame(_module));
         const enemies = game.contentDocument.querySelector("div#Docents");
         const template = enemies.querySelector("div.docent");
         enemies.removeChild(template);
@@ -48,6 +45,13 @@ var Frame;
             }
             enemies.appendChild(clone);
         }
+    }
+    function startGame(_module) {
+        let query = new URLSearchParams(_module.data).toString();
+        game.src = games[_module.game].url + "?" + query;
+        console.log(game, _module.game);
+        +"?" + query;
+        setupHeader(_module.docents);
     }
     function setupHeader(_docents) {
         let span = document.querySelector("span#docents");

@@ -5,7 +5,7 @@ namespace Frame {
 
   let game: HTMLIFrameElement;
 
-  type Module = { points: number, docents: string[], game: string, data: Record<string, string>, description: string };
+  type Module = { title: string, points: number, docents: string[], game: string, data: Record<string, string>, description: string };
   type Docent = { title: string, first: string, name: string, job: string, traits: { [trait: string]: number } };
   type Game = { url: string, callToAction: string };
 
@@ -27,17 +27,12 @@ namespace Frame {
     const module: Module = modules[curriculum[0]];
 
     game = document.querySelector("iframe");
-    let query: string = new URLSearchParams(module.data).toString()
-    game.src = games[module.game].url + "?" + query;
-    console.log(game, module.game);
-
-    game.src = "Frame/Dialog/Start.html" + "?" + query;
+    game.src = "Frame/Dialog/Start.html";
     await new Promise<void>((_resolve) => {
       game.addEventListener("load", () => { console.log("loaded"); _resolve(); });
     });
 
     setupStart(module);
-    // setupHeader(module.docents);
   }
 
   function setupStart(_module: Module): void {
@@ -47,6 +42,7 @@ namespace Frame {
     game.contentDocument.querySelector("div").textContent = _module.description;
     game.contentDocument.querySelector("div#Call").textContent = games[_module.game].callToAction;
     game.contentDocument.querySelector("input").value = "" + _module.points;
+    game.contentDocument.querySelector("button").addEventListener("click", () => startGame(_module));
 
 
     const enemies: HTMLDivElement = game.contentDocument.querySelector("div#Docents");
@@ -71,6 +67,13 @@ namespace Frame {
     }
   }
 
+  function startGame(_module: Module): void {
+    let query: string = new URLSearchParams(_module.data).toString()
+    game.src = games[_module.game].url + "?" + query;
+    console.log(game, _module.game); + "?" + query
+    setupHeader(_module.docents);
+  }
+
   function setupHeader(_docents: string[]) {
     let span: HTMLSpanElement = document.querySelector("span#docents")!;
     span.innerHTML = "";
@@ -80,7 +83,6 @@ namespace Frame {
       affectDocent(+iDocent, Common.MESSAGE.IDLE);
     }
   }
-
 
   function receiveMessage(_data: any): any {
     let message: Common.MESSAGE = _data.type;
