@@ -1,5 +1,6 @@
 html,
 body {
+  font-family: "Comic Sans MS", "Comic Sans";
   height: 100%;
   margin: 0px;
   padding: 0px;
@@ -24,7 +25,7 @@ span {
   display: grid;
   justify-content: center;
   grid-template-columns: 1fr 1fr;
-  gap: 4em 8em;
+  gap: 3em 6em;
   margin: 5% 15%;
 }
 
@@ -34,14 +35,9 @@ form {
   align-items: center;
 }
 
-button {
-  width: 10%;
-}
-
 #Options > span > input{
   display: none;
 }
-
 
 #Options > span > label{
   display: block;
@@ -52,7 +48,7 @@ button {
   font-size: 1.1em;
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-out;
 }
 
 #Options > span > label:hover {
@@ -65,6 +61,88 @@ button {
   box-shadow: 0 0 10px #0077ff80;
   background: linear-gradient(to bottom, #0044aa, #002255);
   color: #aaccff;
+}
+
+@keyframes TransitioningBackground {
+  0% {
+    background-position: 1% 0%;
+  }
+  50% {
+    background-position: 99% 100%;
+  }
+  100% {
+    background-position: 1% 0%;
+  }
+}
+
+button {
+  font-family: "Comic Sans MS", "Comic Sans";
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  background: #777;
+  color: #ccc;
+  width: 8em;
+  height: 2em;
+  pointer-events: none;
+  cursor: not-allowed;
+  animation: none;
+  background-image: none;
+  transform: none;
+}
+
+form:has(input:checked) button {
+  pointer-events: auto;
+  cursor: pointer;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(270deg, #0077ff, #0044aa);
+  background-size: 400% 400%;
+  animation: TransitioningBackground 10s ease infinite;
+  transition: 0.4s;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5);
+    width: 60px;
+    height: 100%;
+    top: 0;
+    filter: blur(30px);
+    transform: translateX(-100px) skewX(-15deg);
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.2);
+    width: 30px;
+    height: 100%;
+    top: 0;
+    filter: blur(5px);
+    transform: translateX(-100px) skewX(-15deg);
+  }
+
+  &:hover {
+    background-image: (linear-gradient(to left, #2d8fe5, #d155b8));
+    transform: scale(1.2);
+    cursor: pointer;
+
+    &::before,
+    &::after {
+      transform: translateX(300px) skewX(-15deg);
+      transition: 0.7s;
+    }
+  }
+
+  &:active {
+    transition: transform 0s;
+    transform: scale(1);
+  }
+
 }
 
 /* 
