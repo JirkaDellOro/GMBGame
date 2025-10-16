@@ -1,5 +1,6 @@
 html,
 body {
+  font-family: "Comic Sans MS", "Comic Sans";
   height: 100%;
   margin: 0px;
   padding: 0px;
@@ -12,3 +13,203 @@ span {
   background-color: white;
   display: block;
 }
+
+#Question {
+  display: flex;
+  justify-content: center;
+  padding: 1em;
+  font-size: 24pt;
+}
+
+#Options {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 1fr 1fr;
+  gap: 3em 6em;
+  margin: 5% 15%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#Options > span > input{
+  display: none;
+}
+
+#Options > span > label{
+  display: block;
+  padding: 0.8em 1em;
+  border: 2px solid #444;
+  background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+  color: white;
+  font-size: 1.1em;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+#Options > span > label:hover {
+  background: linear-gradient(to bottom, #3a3a3a, #222);
+  border-color: #777;
+}
+
+#Options > span > input:checked + label{
+  border-color: #0077ff;
+  box-shadow: 0 0 10px #0077ff80;
+  background: linear-gradient(to bottom, #0044aa, #002255);
+  color: #aaccff;
+}
+
+@keyframes TransitioningBackground {
+  0% {
+    background-position: 1% 0%;
+  }
+  50% {
+    background-position: 99% 100%;
+  }
+  100% {
+    background-position: 1% 0%;
+  }
+}
+
+button {
+  font-family: "Comic Sans MS", "Comic Sans";
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  background: #777;
+  color: #ccc;
+  width: 8em;
+  height: 2em;
+  pointer-events: none;
+  cursor: not-allowed;
+  animation: none;
+  background-image: none;
+  transform: none;
+}
+
+form:has(input:checked) button {
+  pointer-events: auto;
+  cursor: pointer;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(270deg, #0077ff, #0044aa);
+  background-size: 400% 400%;
+  animation: TransitioningBackground 10s ease infinite;
+  transition: 0.4s;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5);
+    width: 60px;
+    height: 100%;
+    top: 0;
+    filter: blur(30px);
+    transform: translateX(-100px) skewX(-15deg);
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.2);
+    width: 30px;
+    height: 100%;
+    top: 0;
+    filter: blur(5px);
+    transform: translateX(-100px) skewX(-15deg);
+  }
+
+  &:hover {
+    background-image: (linear-gradient(to left, #2d8fe5, #d155b8));
+    transform: scale(1.2);
+    cursor: pointer;
+
+    &::before,
+    &::after {
+      transform: translateX(300px) skewX(-15deg);
+      transition: 0.7s;
+    }
+  }
+
+  &:active {
+    transition: transform 0s;
+    transform: scale(1);
+  }
+
+}
+
+/* 
+div#game {
+  aspect-ratio: 1/2;
+  background-color: darkblue;
+}
+
+textarea {
+  position: fixed;
+  top: 100px;
+  background-color: #ffffff88;
+}
+
+@keyframes blink {
+  0% {
+    background-color: red;
+  }
+
+  50% {
+    background-color: blue;
+  }
+
+  100% {
+    background-color: red;
+  }
+}
+
+[type="out"] {
+  animation: blink 0.3s infinite;
+}
+
+.ball {
+  border-radius: 50%;
+}
+
+.distractor {
+  border-radius: 30%;
+}
+
+.distractor[type="♥"] {
+  background-color: red;
+}
+
+.paddle {
+  background-color: red;
+}
+
+.block {
+  background-color: white;
+}
+
+.block[type="2"] {
+  background-color: lightblue;
+}
+
+.heart {
+  background-color: red;
+}
+
+.heart::after,
+.distractor[type="♥"]::after {
+  content: "♥";
+}
+
+.distractor[type="☠"]::after {
+  content: "☠";
+  background-color: black;
+  color: white;
+} */
