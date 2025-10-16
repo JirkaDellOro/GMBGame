@@ -6,12 +6,14 @@ var Frame;
     let modules;
     let docents;
     let games;
+    let curriculum;
     async function start() {
         console.log("Start Frame");
         modules = await (await fetch("/Frame/Modules.json")).json();
         docents = await (await fetch("/Frame/Docents.json")).json();
         games = await (await fetch("/Frame/Games.json")).json();
-        const module = modules[0][0];
+        curriculum = await (await fetch("/Frame/Curriculum.json")).json();
+        const module = modules[curriculum[0]];
         game = document.querySelector("iframe");
         let query = new URLSearchParams(module.data).toString();
         game.src = games[module.game].url + "?" + query;

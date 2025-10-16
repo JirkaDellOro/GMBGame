@@ -5,17 +5,15 @@ namespace Frame {
 
   let game: HTMLIFrameElement;
 
-  type Module = { title: string, points: number, docents: string[], game: string, data: Record<string, string>, description: string };
+  type Module = { points: number, docents: string[], game: string, data: Record<string, string>, description: string };
   type Docent = { title: string, first: string, name: string, job: string, traits: { [trait: string]: number } };
   type Game = { url: string, callToAction: string };
 
 
-  let modules: Module[][];
+  let modules: { [title: string]: Module };
   let docents: { [id: string]: Docent };
   let games: { [id: string]: Game };
-
-
-
+  let curriculum: string[];
 
 
   async function start(): Promise<void> {
@@ -24,8 +22,9 @@ namespace Frame {
     modules = await (await fetch("/Frame/Modules.json")).json();
     docents = await (await fetch("/Frame/Docents.json")).json();
     games = await (await fetch("/Frame/Games.json")).json();
+    curriculum = await (await fetch("/Frame/Curriculum.json")).json();
 
-    const module: Module = modules[0][0];
+    const module: Module = modules[curriculum[0]];
 
     game = document.querySelector("iframe");
     let query: string = new URLSearchParams(module.data).toString()
