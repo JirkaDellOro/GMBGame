@@ -1,0 +1,38 @@
+[
+  [
+    {
+      "title": "Project 1",
+      "points": 5,
+      "docents": [
+        "NO",
+        "UH"
+      ],
+      "game": "Brick",
+      "data": {},
+      "description": "The first thing you do when you get here...: create a game! In this 'Entry Project', you form a team with other students and just start. We will provide you with resources, teach some basics and help you manage your project."
+    },
+    {
+      "title": "Visual 1",
+      "points": 6,
+      "docents": [
+        "NH",
+        "CM"
+      ],
+      "game": "Quiz",
+      "data": {
+        "tasks": "Visual1.json"
+      },
+      "description": "Learn to visualize your ideas with pen and paper or even modelling clay. This hands on course teaches the very basics of concept art and visualization."
+    },
+    {
+      "title": "Theory 1",
+      "points": 7,
+      "docents": [
+        "TS"
+      ],
+      "game": "Quiz",
+      "data": {},
+      "description": "Learn the basics of human computer interaction, how computers actually work and how humans percieve their surroundings. This knowledge is crucial to create compelling experiences in the future."
+    }
+  ]
+]

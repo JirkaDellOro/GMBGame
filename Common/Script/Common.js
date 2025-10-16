@@ -9,7 +9,7 @@ var Common;
         MESSAGE["FAIL"] = "Fail";
         MESSAGE["PASS"] = "Pass";
     })(MESSAGE = Common.MESSAGE || (Common.MESSAGE = {}));
-    Common.pathToPortraits = "Common/Portraits/";
+    Common.pathToPortraits = "/Common/Portraits/";
     function sendMessage(_message, _docent) {
         let message = { type: _message, docent: _docent };
         parent.postMessage(message);

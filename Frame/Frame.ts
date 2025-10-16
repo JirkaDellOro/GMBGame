@@ -1,44 +1,75 @@
 namespace Frame {
+  import ƒ = FudgeCore;
   window.addEventListener("load", start);
   window.addEventListener("message", (_event) => receiveMessage(_event.data));
 
   let game: HTMLIFrameElement;
 
-  type Stage = { title: string, docents: string[], game: string, data: Record<string, string> };
-  type Docent = { title: string, first: string, name: string, skills: { skill: string, value: number }[] };
+  type Module = { title: string, points: number, docents: string[], game: string, data: Record<string, string>, description: string };
+  type Docent = { title: string, first: string, name: string, job: string, traits: { [trait: string]: number } };
+  type Game = { url: string, callToAction: string };
 
-  const docents: { [id: string]: Docent } = {
-    "NO": { title: "Prof.", first: "Nikolaus", name: "Hottong", skills: [] },
-    "UH": { title: "Prof. Dr.", first: "Uwe", name: "Hahne", skills: [] },
-    "NS": { title: "Prof. Dr.", first: "Norbert", name: "Schnell", skills: [] },
-    "JD": { title: "Prof.", first: "Jirka", name: "Dell'Oro-Friedl", skills: [] },
-    "JT": { title: "MA", first: "Julien", name: "Trübiger", skills: [] },
-    "CM": { title: "Prof.", first: "Christoph", name: "Müller", skills: [] },
-    "CF": { title: "Dipl.-Vw.", first: "Christian", name: "Franz", skills: [] },
-    "NH": { title: "B.F.A", first: "Niv", name: "Shpigel", skills: [] },
-  };
 
-  const data: Stage[][] = [
-    [
-      { title: "Project 1", docents: ["KO", "UH"], game: "Brick/Brick.html", data: {} },
-      { title: "Visual 1", docents: ["NH", "CM"], game: "Quiz/Quiz.html", data: { tasks: "Visual1.json" } },
-      { title: "Theory 1", docents: ["TS"], game: "Multiple", data: {} }
-    ]
-  ];
+  let modules: Module[][];
+  let docents: { [id: string]: Docent };
+  let games: { [id: string]: Game };
 
 
 
-  function start(): void {
+
+
+  async function start(): Promise<void> {
     console.log("Start Frame");
-    let stage: Stage = data[0][1];
+
+    modules = await (await fetch("/Frame/Modules.json")).json();
+    docents = await (await fetch("/Frame/Docents.json")).json();
+    games = await (await fetch("/Frame/Games.json")).json();
+
+    const module: Module = modules[0][0];
 
     game = document.querySelector("iframe");
-    let query: string = new URLSearchParams(stage.data).toString()
-    // game.src = stage.game + "?" + query;
-    game.src = "Frame/Dialog/Start.html" + "?" + query;
-    console.log(game, stage.game);
+    let query: string = new URLSearchParams(module.data).toString()
+    game.src = games[module.game].url + "?" + query;
+    console.log(game, module.game);
 
-    // setupHeader(stage.docents);
+    game.src = "Frame/Dialog/Start.html" + "?" + query;
+    await new Promise<void>((_resolve) => {
+      game.addEventListener("load", () => { console.log("loaded"); _resolve(); });
+    });
+
+    setupStart(module);
+    // setupHeader(module.docents);
+  }
+
+  function setupStart(_module: Module): void {
+    console.log("Setup Start Page");
+
+    game.contentDocument.querySelector("h1").textContent = _module.title;
+    game.contentDocument.querySelector("div").textContent = _module.description;
+    game.contentDocument.querySelector("div#Call").textContent = games[_module.game].callToAction;
+    game.contentDocument.querySelector("input").value = "" + _module.points;
+
+
+    const enemies: HTMLDivElement = game.contentDocument.querySelector("div#Docents");
+    const template: HTMLSpanElement = enemies.querySelector("div.docent");
+    enemies.removeChild(template);
+
+    for (let id of _module.docents) {
+      const clone: HTMLElement = <HTMLElement>template.cloneNode(true);
+      const docent: Docent = docents[id];
+      clone.querySelector("img").src = Common.pathToPortraits + id + "_Idle.png";
+      clone.querySelector("h2").textContent = docent.title + " " + docent.first + " " + docent.name;
+      clone.querySelector("h3").textContent = docent.job;
+
+      const meters: NodeListOf<HTMLMeterElement> = clone.querySelectorAll("meter");
+      for (let i: number = 0; i < meters.length; i++) {
+        const trait: string = Object.keys(docent.traits)[i];
+        meters[i].value = docent.traits[trait];
+        meters[i].previousSibling.textContent = trait;
+      }
+
+      enemies.appendChild(clone);
+    }
   }
 
   function setupHeader(_docents: string[]) {
@@ -64,7 +95,7 @@ namespace Frame {
         break;
       default:
         affectDocent(_data.docent, message);
-        break; 
+        break;
     }
   }
 

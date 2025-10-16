@@ -1,5 +1,24 @@
-*, body {
+html,
+body,
+h2,
+h3 {
   margin: 0px;
   padding: 0px;
   background-color: aliceblue;
+}
+
+body>div {
+  padding-bottom: 1em;
+}
+
+div.docent,
+div.traits {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  white-space: nowrap;;
+}
+
+img {
+  height: 100%;
+  image-rendering: pixelated;
 }

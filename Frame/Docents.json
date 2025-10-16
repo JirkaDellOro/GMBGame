@@ -1,0 +1,90 @@
+{
+  "NO": {
+    "title": "Prof.",
+    "first": "Nikolaus",
+    "name": "Hottong",
+    "job": "Professor of Media Technology",
+    "traits": {
+      "Trait 1": 0.8,
+      "Trait 2": 0.6,
+      "Trait 3": 0.6
+    }
+  },
+  "UH": {
+    "title": "Prof. Dr.",
+    "first": "Uwe",
+    "name": "Hahne",
+    "job": "Professor of Computer Vision",
+    "traits": {
+      "Trait 1": 0.8,
+      "Trait 2": 0.6,
+      "Trait 3": 0.6
+    }
+  },
+  "NS": {
+    "title": "Prof. Dr.",
+    "first": "Norbert",
+    "name": "Schnell",
+    "job": "Professor of Sound Design",
+    "traits": {
+      "Trait 1": 0.8,
+      "Trait 2": 0.6,
+      "Trait 3": 0.6
+    }
+  },
+  "JD": {
+    "title": "Prof.",
+    "first": "Jirka",
+    "name": "Dell'Oro-Friedl",
+    "job": "Professor of Game Design",
+    "traits": {
+      "Trait 1": 0.8,
+      "Trait 2": 0.6,
+      "Trait 3": 0.6
+    }
+  },
+  "JT": {
+    "title": "MA",
+    "first": "Julien",
+    "name": "Trübiger",
+    "job": "Academic Employee",
+    "traits": {
+      "Trait 1": 0.8,
+      "Trait 2": 0.6,
+      "Trait 3": 0.6
+    }
+  },
+  "CM": {
+    "title": "Prof.",
+    "first": "Christoph",
+    "name": "Müller",
+    "job": "Professor of Computer Graphics",
+    "traits": {
+      "Trait 1": 0.4,
+      "Trait 2": 1.0,
+      "Trait 3": 0.6
+    }
+  },
+  "CF": {
+    "title": "Dipl.-Vw.",
+    "first": "Christian",
+    "name": "Franz",
+    "job": "University Lecturer",
+    "traits": {
+      "Trait 1": 0.5,
+      "Trait 2": 0.9,
+      "Trait 3": 0.1
+    }
+  },
+  "NH": {
+    "title": "B.F.A",
+    "first": "Niv",
+    "name": "Shpigel",
+    "job": "Professor of Game Art",
+    "traits": {
+      "Trait 1": 0.8,
+      "Trait 2": 0.6,
+      "Trait 3": 0.2
+    }
+  }
+}

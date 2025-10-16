@@ -5,29 +5,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Start Game</title>
+  <link rel="stylesheet" href="Dialog.css">
 </head>
 
 <body>
   <h1>Module Title</h1>
-
+  <div>Module description. Just a few lines to briefly describe the contents and results of the module. Not more than 3
+    lines.</div>
   <div id="Docents">
-
-    <span>
+    <div class="docent">
       <img src="../../Common/Portraits/JT_Idle.png" alt="">
       <div>
-        <label for="Trait1">Trait 1</label><meter id="Trait1" min="0" max="1"></meter>
-      </div>
-      <div>
-        <label for="Trait2">Trait 2</label><meter id="Trait2" min="0" max="1"></meter>
-      </div>
-      <div>
-        <label for="Trait3">Trait 3</label><meter id="Trait3" min="0" max="1"></meter>
-      </div>
-    </span>
+        <h2>Name</h2>
+        <h3>Prof for something</h3>
 
+        <div class="traits">
+            <label for="Trait1">Trait</label><meter id="Trait1" min="0" max="1" value="0.5"></meter>
+            <label for="Trait2">Trait</label><meter id="Trait2" min="0" max="1" value="0.5"></meter>
+            <label for="Trait3">Trait</label><meter id="Trait3" min="0" max="1" value="0.5"></meter>
+        </div>
+      
+      </div>
+    </div>
   </div>
-  <div>module description</div>
+  <div id="Call">Call to action. To pass this module, win the game.</div>
   <div>Points to gain: <input type="number" readonly value="6"></input></div>
+  <button type="button">START</button>
 </body>
 
 </html>

@@ -1,0 +1,10 @@
+{
+  "Brick": {
+    "url": "Brick/Brick.html",
+    "callToAction": "Break the hearts of the jury by keeping the ball in the game. Beware of their attacks in the form of changing requirements...!"
+  },
+  "Quiz": {
+    "url": "Quiz/Quiz.html",
+    "callToAction": "Complete the quizzes. Choose wisely and hit the answer button to shove the points to your bonus stack... or malus!"
+  }
+}

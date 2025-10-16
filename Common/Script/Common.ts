@@ -10,7 +10,7 @@ namespace Common {
 
   export type Message = { type: MESSAGE, docent?: number | string };
 
-  export const pathToPortraits: string = "Common/Header/Portraits/";
+  export const pathToPortraits: string = "/Common/Portraits/";
 
   export function sendMessage(_message: Common.MESSAGE, _docent?: number | string): void {
     let message: Common.Message = { type: _message, docent: _docent };
