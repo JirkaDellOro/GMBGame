@@ -31,6 +31,7 @@ var Quiz;
                 button.addEventListener("click", hndClick);
             });
         }
+        await ƒ.Time.game.delay(2000);
         if (success < 3) {
             Common.sendMessage(Common.MESSAGE.IDLE);
             Common.sendMessage(Common.MESSAGE.FAIL);

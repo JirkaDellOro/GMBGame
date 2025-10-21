@@ -7,22 +7,30 @@ var Frame;
     let docents;
     let games;
     let curriculum;
+    let module;
     async function start() {
         console.log("Start Frame");
         modules = await (await fetch(Common.root + "/Frame/Modules.json")).json();
         docents = await (await fetch(Common.root + "/Frame/Docents.json")).json();
         games = await (await fetch(Common.root + "/Frame/Games.json")).json();
         curriculum = await (await fetch(Common.root + "/Frame/Curriculum.json")).json();
-        const module = modules[curriculum[0]];
+        module = modules[curriculum[0]];
         game = document.querySelector("iframe");
-        game.src = Common.root + "/Frame/Dialog/Start.html";
-        await new Promise((_resolve) => {
-            game.addEventListener("load", () => { console.log("loaded"); _resolve(); });
-        });
         setupStart(module);
     }
-    function setupStart(_module) {
+    async function setupStop(_module, _pass) {
+        console.log("Setup Stop Page");
+        await load("/Frame/Dialog/Stop.html");
+        game.contentDocument.querySelector("h1").textContent = _module.title;
+        game.contentDocument.querySelector("input").value = "" + _module.points;
+        game.contentDocument.querySelector("div#Result").textContent = _pass ? "YOU PASSED!" : "YOU FAILED!";
+        let selector = "input[name=" + (_pass ? "Bonus" : "MalusBasic") + "]";
+        let receiver = document.body.querySelector(selector);
+        receiver.value = "" + (+receiver.value + _module.points);
+    }
+    async function setupStart(_module) {
         console.log("Setup Start Page");
+        await load("/Frame/Dialog/Start.html");
         game.contentDocument.querySelector("h1").textContent = _module.title;
         game.contentDocument.querySelector("div").textContent = _module.description;
         game.contentDocument.querySelector("div#Call").textContent = games[_module.game].callToAction;
@@ -46,6 +54,12 @@ var Frame;
             enemies.appendChild(clone);
         }
     }
+    async function load(_path) {
+        game.src = Common.root + _path;
+        await new Promise((_resolve) => {
+            game.addEventListener("load", () => { console.log("loaded"); _resolve(); });
+        });
+    }
     function startGame(_module) {
         let query = new URLSearchParams(_module.data).toString();
         game.src = games[_module.game].url + "?" + query;
@@ -67,9 +81,11 @@ var Frame;
         switch (message) {
             case Common.MESSAGE.FAIL:
                 console.log("FAIL!");
+                setupStop(module, false);
                 break;
             case Common.MESSAGE.PASS:
                 console.log("PASS!");
+                setupStop(module, true);
                 break;
             default:
                 affectDocent(_data.docent, message);

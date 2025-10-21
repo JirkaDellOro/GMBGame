@@ -14,6 +14,7 @@ namespace Frame {
   let docents: { [id: string]: Docent };
   let games: { [id: string]: Game };
   let curriculum: string[];
+  let module: Module;
 
 
   async function start(): Promise<void> {
@@ -24,19 +25,28 @@ namespace Frame {
     games = await (await fetch(Common.root + "/Frame/Games.json")).json();
     curriculum = await (await fetch(Common.root + "/Frame/Curriculum.json")).json();
 
-    const module: Module = modules[curriculum[0]];
-
+    module = modules[curriculum[0]];
     game = document.querySelector("iframe");
-    game.src = Common.root + "/Frame/Dialog/Start.html";
-    await new Promise<void>((_resolve) => {
-      game.addEventListener("load", () => { console.log("loaded"); _resolve(); });
-    });
 
     setupStart(module);
   }
 
-  function setupStart(_module: Module): void {
+  async function setupStop(_module: Module, _pass: boolean): Promise<void> {
+    console.log("Setup Stop Page");
+    await load("/Frame/Dialog/Stop.html");
+
+    game.contentDocument.querySelector("h1").textContent = _module.title;
+    game.contentDocument.querySelector("input").value = "" + _module.points;
+    game.contentDocument.querySelector("div#Result").textContent = _pass ? "YOU PASSED!" : "YOU FAILED!";
+
+    let selector: string = "input[name=" + (_pass ? "Bonus" : "MalusBasic") + "]";
+    let receiver: HTMLInputElement = document.body.querySelector(selector);
+    receiver.value = "" + (+receiver.value + _module.points);
+  }
+
+  async function setupStart(_module: Module): Promise<void> {
     console.log("Setup Start Page");
+    await load("/Frame/Dialog/Start.html");
 
     game.contentDocument.querySelector("h1").textContent = _module.title;
     game.contentDocument.querySelector("div").textContent = _module.description;
@@ -67,6 +77,13 @@ namespace Frame {
     }
   }
 
+  async function load(_path: string): Promise<void> {
+    game.src = Common.root + _path;
+    await new Promise<void>((_resolve) => {
+      game.addEventListener("load", () => { console.log("loaded"); _resolve(); });
+    });
+  }
+
   function startGame(_module: Module): void {
     let query: string = new URLSearchParams(_module.data).toString()
     game.src = games[_module.game].url + "?" + query;
@@ -90,9 +107,11 @@ namespace Frame {
     switch (message) {
       case Common.MESSAGE.FAIL:
         console.log("FAIL!");
+        setupStop(module, false)
         break;
       case Common.MESSAGE.PASS:
         console.log("PASS!");
+        setupStop(module, true)
         break;
       default:
         affectDocent(_data.docent, message);
