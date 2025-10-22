@@ -10,18 +10,18 @@ namespace Quiz {
   window.addEventListener("load", start);
 
   async function start(): Promise<void> {
-    let tasks: DocentTask[] = await createTasks();
+    const tasks: DocentTask[] = await createTasks();
     let success: number = 0;
 
     while (tasks.length) {
       await ƒ.Time.game.delay(2000);
-      let task: DocentTask = ƒ.random.splice(tasks);
+      const task: DocentTask = ƒ.random.splice(tasks);
       Common.sendMessage(Common.MESSAGE.IDLE);
       Common.sendMessage(Common.MESSAGE.ANGRY, task.docent);
       createHTML(task.task);
-      let button: HTMLButtonElement = document.querySelector("button")!;
+      const button: HTMLButtonElement = document.querySelector("button")!;
       await new Promise((_resolve) => {
-        let hndClick: EventListener = () => {
+        const hndClick: EventListener = () => {
           button.removeEventListener("click", hndClick);
           if (validate(task.task)) {
             Common.sendMessage(Common.MESSAGE.HURT, task.docent);
@@ -48,17 +48,17 @@ namespace Quiz {
 
   async function createTasks(): Promise<DocentTask[]> {
     const resonse: Response = await fetch("Visual1.json");
-    let tasksAll: DocentTask = await resonse.json();
+    const tasksAll: DocentTask = await resonse.json();
 
-    let tasks: { docent: string, task: Task }[] = [];
-    let docents: string[] = <string[]>Reflect.ownKeys(tasksAll);
+    const tasks: { docent: string, task: Task }[] = [];
+    const docents: string[] = <string[]>Reflect.ownKeys(tasksAll);
 
     while (tasks.length < 3) {
       let docent: string = docents.pop();
       if (!docent)
         docent = <string>ƒ.random.getElement(Reflect.ownKeys(tasksAll));
 
-      let task: Task = ƒ.random.splice(tasksAll[docent])
+      const task: Task = ƒ.random.splice(tasksAll[docent])
       tasks.push({ docent: docent, task: task });
     }
     console.log(tasks);
@@ -73,13 +73,13 @@ namespace Quiz {
   }
 
   function createHTML(_task: Task): void {
-    let question: HTMLDivElement = document.querySelector("div#Question")!;
+    const question: HTMLDivElement = document.querySelector("div#Question")!;
     question.innerText = _task.question;
-    let options: HTMLDivElement = document.querySelector("div#Options")!;
+    const options: HTMLDivElement = document.querySelector("div#Options")!;
     options.innerHTML = "";
     const spans: HTMLSpanElement[] = [];
 
-    for (let option in _task.options) {
+    for (const option in _task.options) {
       const input: HTMLInputElement = document.createElement("input");
       input.type = "radio";
       input.id = "option" + option;

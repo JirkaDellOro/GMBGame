@@ -43,7 +43,7 @@ namespace Brick {
 
     document.addEventListener("mousemove", hndMouse);
     document.addEventListener("click", hndMouse);
-    let touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game);
+    const touch: ƒ.TouchEventDispatcher = new ƒ.TouchEventDispatcher(game);
     touch.activate(true);
     game.addEventListener(ƒ.EVENT_TOUCH.MOVE, hndTouch);
     game.addEventListener(ƒ.EVENT_TOUCH.TAP, hndTouch);
@@ -105,12 +105,12 @@ namespace Brick {
       ball.position = { x: paddle.position.x, y: paddle.position.y - paddle.scale.y / 2 - radius };
   }
 
-  function hndTimer(_event: ƒ.EventTimer): void {
+  function hndTimer(/* _event: ƒ.EventTimer */): void {
     if (state != STATE.RUN)
       return;
 
-    let hearts: Entity[] = blocks.filter((_entity: Entity) => _entity.element.className == "heart");
-    let heart: Entity = ƒ.Random.default.getElement(hearts);
+    const hearts: Entity[] = blocks.filter((_entity: Entity) => _entity.element.className == "heart");
+    const heart: Entity = ƒ.Random.default.getElement(hearts);
     moveables.push(createDistractor(heart.position, blockSize, "☠"));
     Common.sendMessage(Common.MESSAGE.ANGRY, +heart.element.getAttribute("type"));
   }
@@ -119,7 +119,7 @@ namespace Brick {
     if (state == STATE.OVER)
       return;
     for (const moveable of moveables) {
-      let positionNew: Vector = {
+      const positionNew: Vector = {
         x: moveable.position.x + moveable.velocity.x * _timeDelta, y: moveable.position.y + moveable.velocity.y * _timeDelta
       };
 

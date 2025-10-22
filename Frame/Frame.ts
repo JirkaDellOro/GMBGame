@@ -39,8 +39,8 @@ namespace Frame {
     game.contentDocument.querySelector("input").value = "" + _module.points;
     game.contentDocument.querySelector("div#Result").textContent = _pass ? "YOU PASSED!" : "YOU FAILED!";
 
-    let selector: string = "input[name=" + (_pass ? "Bonus" : "MalusBasic") + "]";
-    let receiver: HTMLInputElement = document.body.querySelector(selector);
+    const selector: string = "input[name=" + (_pass ? "Bonus" : "MalusBasic") + "]";
+    const receiver: HTMLInputElement = document.body.querySelector(selector);
     receiver.value = "" + (+receiver.value + _module.points);
   }
 
@@ -59,7 +59,7 @@ namespace Frame {
     const template: HTMLSpanElement = enemies.querySelector("div.docent");
     enemies.removeChild(template);
 
-    for (let id of _module.docents) {
+    for (const id of _module.docents) {
       const clone: HTMLElement = <HTMLElement>template.cloneNode(true);
       const docent: Docent = docents[id];
       clone.querySelector("img").src = Common.pathToPortraits + id + "_Idle.png";
@@ -85,24 +85,24 @@ namespace Frame {
   }
 
   function startGame(_module: Module): void {
-    let query: string = new URLSearchParams(_module.data).toString()
+    const query: string = new URLSearchParams(_module.data).toString()
     game.src = games[_module.game].url + "?" + query;
-    console.log(game, _module.game); + "?" + query
+    console.log(game, _module.game);
     setupHeader(_module.docents);
   }
 
-  function setupHeader(_docents: string[]) {
-    let span: HTMLSpanElement = document.querySelector("span#docents")!;
+  function setupHeader(_docents: string[]): void {
+    const span: HTMLSpanElement = document.querySelector("span#docents")!;
     span.innerHTML = "";
-    for (let iDocent in _docents) {
+    for (const iDocent in _docents) {
       const docent: Docent = docents[_docents[iDocent]];
       span.innerHTML += `<figure><img src="" id="${_docents[iDocent]}"/><figcaption>${docent.first}</figcaption></figure>`;
       affectDocent(+iDocent, Common.MESSAGE.IDLE);
     }
   }
 
-  function receiveMessage(_data: any): any {
-    let message: Common.MESSAGE = _data.type;
+  function receiveMessage(_data: ƒ.General): void {
+    const message: Common.MESSAGE = _data.type;
 
     switch (message) {
       case Common.MESSAGE.FAIL:
@@ -119,7 +119,7 @@ namespace Frame {
     }
   }
 
-  function affectDocent(_which: number | string | undefined, _effect: Common.MESSAGE) {
+  function affectDocent(_which: number | string | undefined, _effect: Common.MESSAGE): void {
     const images: NodeListOf<HTMLImageElement> = document.querySelector("span#docents")!.querySelectorAll("img");
 
     let docent: string;
